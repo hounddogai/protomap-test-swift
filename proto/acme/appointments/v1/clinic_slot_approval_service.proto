@@ -1,0 +1,316 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.appointments.v1;
+
+import "acme/appointments/v1/appointments.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Appointments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/appointments/v1;appointmentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ClinicSlotApprovalServiceProto";
+option java_package = "com.acme.appointments.v1";
+
+// Routes clinic slots through approval, with escalation and delegation.
+service ClinicSlotApprovalService {
+  // Submits a clinic slot.
+  rpc SubmitClinicSlot(SubmitClinicSlotRequest) returns (SubmitClinicSlotResponse);
+
+  // Approves a clinic slot.
+  rpc ApproveClinicSlot(ApproveClinicSlotRequest) returns (ApproveClinicSlotResponse);
+
+  // Rejects a clinic slot.
+  rpc RejectClinicSlot(RejectClinicSlotRequest) returns (RejectClinicSlotResponse);
+
+  // Escalates a clinic slot.
+  rpc EscalateClinicSlot(EscalateClinicSlotRequest) returns (EscalateClinicSlotResponse);
+
+  // Lists clinic slots a page at a time.
+  rpc ListPendingClinicSlots(ListPendingClinicSlotsRequest) returns (ListPendingClinicSlotsResponse);
+
+  // Delegates a clinic slot.
+  rpc DelegateClinicSlotApproval(DelegateClinicSlotApprovalRequest) returns (DelegateClinicSlotApprovalResponse);
+
+  // Recalls a clinic slot.
+  rpc RecallClinicSlot(RecallClinicSlotRequest) returns (RecallClinicSlotResponse);
+
+  // Comments a clinic slot.
+  rpc CommentClinicSlotApproval(CommentClinicSlotApprovalRequest) returns (CommentClinicSlotApprovalResponse);
+}
+
+// The request of `SubmitClinicSlot`.
+message SubmitClinicSlotRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string clinic_slot_id = 2;
+  ClinicSlot clinic_slot = 3;
+  SubmitClinicSlotRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitClinicSlot`.
+message SubmitClinicSlotResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ClinicSlot clinic_slot = 1;
+  SubmitClinicSlotResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveClinicSlot`.
+message ApproveClinicSlotRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string clinic_slot_id = 2;
+  ClinicSlot clinic_slot = 3;
+  ApproveClinicSlotRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveClinicSlot`.
+message ApproveClinicSlotResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ClinicSlot clinic_slot = 1;
+  ApproveClinicSlotResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectClinicSlot`.
+message RejectClinicSlotRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string clinic_slot_id = 2;
+  ClinicSlot clinic_slot = 3;
+  RejectClinicSlotRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectClinicSlot`.
+message RejectClinicSlotResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ClinicSlot clinic_slot = 1;
+  RejectClinicSlotResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateClinicSlot`.
+message EscalateClinicSlotRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string clinic_slot_id = 2;
+  ClinicSlot clinic_slot = 3;
+  EscalateClinicSlotRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateClinicSlot`.
+message EscalateClinicSlotResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ClinicSlot clinic_slot = 1;
+  EscalateClinicSlotResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingClinicSlots`.
+message ListPendingClinicSlotsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ClinicSlotStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingClinicSlotsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingClinicSlots`.
+message ListPendingClinicSlotsResponse {
+  repeated ClinicSlot clinic_slots = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateClinicSlotApproval`.
+message DelegateClinicSlotApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string clinic_slot_id = 2;
+  ClinicSlot clinic_slot = 3;
+  DelegateClinicSlotApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateClinicSlotApproval`.
+message DelegateClinicSlotApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ClinicSlot clinic_slot = 1;
+  DelegateClinicSlotApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallClinicSlot`.
+message RecallClinicSlotRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string clinic_slot_id = 2;
+  ClinicSlot clinic_slot = 3;
+  RecallClinicSlotRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallClinicSlot`.
+message RecallClinicSlotResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ClinicSlot clinic_slot = 1;
+  RecallClinicSlotResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CommentClinicSlotApproval`.
+message CommentClinicSlotApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string clinic_slot_id = 2;
+  ClinicSlot clinic_slot = 3;
+  CommentClinicSlotApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentClinicSlotApproval`.
+message CommentClinicSlotApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ClinicSlot clinic_slot = 1;
+  CommentClinicSlotApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

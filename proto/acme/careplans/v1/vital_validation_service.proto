@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.careplans.v1;
+
+import "acme/careplans/v1/careplans.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Careplans.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/careplans/v1;careplansv1";
+option java_multiple_files = true;
+option java_outer_classname = "VitalValidationServiceProto";
+option java_package = "com.acme.careplans.v1";
+
+// Checks vitals against the rules before anything acts on them.
+service VitalValidationService {
+  // Validates a vital.
+  rpc ValidateVital(ValidateVitalRequest) returns (ValidateVitalResponse);
+
+  // Previews a vital.
+  rpc PreviewVital(PreviewVitalRequest) returns (PreviewVitalResponse);
+
+  // Checks a vital.
+  rpc CheckVitalEligibility(CheckVitalEligibilityRequest) returns (CheckVitalEligibilityResponse);
+
+  // Normalizes a vital.
+  rpc NormalizeVital(NormalizeVitalRequest) returns (NormalizeVitalResponse);
+
+  // Explains a vital.
+  rpc ExplainVitalDecision(ExplainVitalDecisionRequest) returns (ExplainVitalDecisionResponse);
+
+  // Scores a vital.
+  rpc ScoreVital(ScoreVitalRequest) returns (ScoreVitalResponse);
+
+  // Lints a vital.
+  rpc LintVitals(LintVitalsRequest) returns (LintVitalsResponse);
+
+  // Returns a vital.
+  rpc GetVitalRules(GetVitalRulesRequest) returns (GetVitalRulesResponse);
+}
+
+// The request of `ValidateVital`.
+message ValidateVitalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  ValidateVitalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateVital`.
+message ValidateVitalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  ValidateVitalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewVital`.
+message PreviewVitalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  PreviewVitalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewVital`.
+message PreviewVitalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  PreviewVitalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckVitalEligibility`.
+message CheckVitalEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  CheckVitalEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckVitalEligibility`.
+message CheckVitalEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  CheckVitalEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeVital`.
+message NormalizeVitalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  NormalizeVitalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeVital`.
+message NormalizeVitalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  NormalizeVitalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainVitalDecision`.
+message ExplainVitalDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  ExplainVitalDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainVitalDecision`.
+message ExplainVitalDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  ExplainVitalDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreVital`.
+message ScoreVitalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  ScoreVitalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreVital`.
+message ScoreVitalResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreVitalResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Vital vital = 1;
+  ScoreVitalResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintVitals`.
+message LintVitalsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  LintVitalsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintVitals`.
+message LintVitalsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  LintVitalsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetVitalRules`.
+message GetVitalRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetVitalRules`.
+message GetVitalRulesResponse {
+  Vital vital = 1;
+  acme.common.v1.OperationResult result = 2;
+}

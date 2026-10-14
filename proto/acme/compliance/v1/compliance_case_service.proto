@@ -1,0 +1,248 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.compliance.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/compliance/v1/compliance.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Compliance.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/compliance/v1;compliancev1";
+option java_multiple_files = true;
+option java_outer_classname = "ComplianceCaseServiceProto";
+option java_package = "com.acme.compliance.v1";
+
+// Manages compliance cases: creates, reads, changes, and lists them.
+service ComplianceCaseService {
+  // Creates a compliance case.
+  rpc CreateComplianceCase(CreateComplianceCaseRequest) returns (CreateComplianceCaseResponse);
+
+  // Returns a compliance case.
+  rpc GetComplianceCase(GetComplianceCaseRequest) returns (GetComplianceCaseResponse);
+
+  // Changes a compliance case.
+  rpc UpdateComplianceCase(UpdateComplianceCaseRequest) returns (UpdateComplianceCaseResponse);
+
+  // Deletes a compliance case.
+  rpc DeleteComplianceCase(DeleteComplianceCaseRequest) returns (DeleteComplianceCaseResponse);
+
+  // Lists compliance cases a page at a time.
+  rpc ListComplianceCases(ListComplianceCasesRequest) returns (ListComplianceCasesResponse);
+
+  // Returns several compliance cases at once.
+  rpc BatchGetComplianceCases(BatchGetComplianceCasesRequest) returns (BatchGetComplianceCasesResponse);
+
+  // Lists compliance cases a page at a time.
+  rpc SearchComplianceCases(SearchComplianceCasesRequest) returns (SearchComplianceCasesResponse);
+
+  // Streams the changes of compliance cases as they happen.
+  rpc WatchComplianceCases(WatchComplianceCasesRequest) returns (stream WatchComplianceCasesResponse);
+
+  // Takes a stream of compliance cases and answers once at the end.
+  rpc BatchCreateComplianceCases(stream BatchCreateComplianceCasesRequest) returns (BatchCreateComplianceCasesResponse);
+
+  // Creates a compliance case.
+  rpc CloneComplianceCase(CloneComplianceCaseRequest) returns (CloneComplianceCaseResponse);
+}
+
+// The request of `CreateComplianceCase`.
+message CreateComplianceCaseRequest {
+  acme.common.v1.RequestContext context = 1;
+  ComplianceCase compliance_case = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateComplianceCase`.
+message CreateComplianceCaseResponse {
+  ComplianceCase compliance_case = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetComplianceCase`.
+message GetComplianceCaseRequest {
+  acme.common.v1.RequestContext context = 1;
+  string compliance_case_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetComplianceCase`.
+message GetComplianceCaseResponse {
+  ComplianceCase compliance_case = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateComplianceCase`.
+message UpdateComplianceCaseRequest {
+  acme.common.v1.RequestContext context = 1;
+  ComplianceCase compliance_case = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateComplianceCase`.
+message UpdateComplianceCaseResponse {
+  ComplianceCase compliance_case = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteComplianceCase`.
+message DeleteComplianceCaseRequest {
+  acme.common.v1.RequestContext context = 1;
+  string compliance_case_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteComplianceCase`.
+message DeleteComplianceCaseResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `ListComplianceCases`.
+message ListComplianceCasesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ComplianceCaseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListComplianceCasesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListComplianceCases`.
+message ListComplianceCasesResponse {
+  repeated ComplianceCase compliance_cases = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `BatchGetComplianceCases`.
+message BatchGetComplianceCasesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string compliance_case_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetComplianceCases`.
+message BatchGetComplianceCasesResponse {
+  repeated ComplianceCase compliance_cases = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchComplianceCases`.
+message SearchComplianceCasesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ComplianceCaseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchComplianceCasesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchComplianceCases`.
+message SearchComplianceCasesResponse {
+  repeated ComplianceCase compliance_cases = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchComplianceCases`.
+message WatchComplianceCasesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ComplianceCaseStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchComplianceCasesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchComplianceCases`.
+message WatchComplianceCasesResponse {
+  ComplianceCase compliance_case = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `BatchCreateComplianceCases`.
+message BatchCreateComplianceCasesRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    BatchCreateComplianceCasesRequest.StreamHeader header = 2;
+    ComplianceCase record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `BatchCreateComplianceCases`.
+message BatchCreateComplianceCasesResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string compliance_case_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated BatchCreateComplianceCasesResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `CloneComplianceCase`.
+message CloneComplianceCaseRequest {
+  acme.common.v1.RequestContext context = 1;
+  ComplianceCase compliance_case = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CloneComplianceCase`.
+message CloneComplianceCaseResponse {
+  ComplianceCase compliance_case = 1;
+  acme.common.v1.OperationResult result = 2;
+}

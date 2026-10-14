@@ -1,0 +1,217 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.telehealth.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/telehealth/v1/telehealth.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Telehealth.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/telehealth/v1;telehealthv1";
+option java_multiple_files = true;
+option java_outer_classname = "VisitNoteQueryServiceProto";
+option java_package = "com.acme.telehealth.v1";
+
+// Answers read-only questions about visit notes, for screens and reports.
+service VisitNoteQueryService {
+  // Returns a visit note.
+  rpc LookupVisitNote(LookupVisitNoteRequest) returns (LookupVisitNoteResponse);
+
+  // Lists visit notes a page at a time.
+  rpc BrowseVisitNotes(BrowseVisitNotesRequest) returns (BrowseVisitNotesResponse);
+
+  // Counts visit notes by status.
+  rpc CountVisitNotes(CountVisitNotesRequest) returns (CountVisitNotesResponse);
+
+  // Returns several visit notes at once.
+  rpc ResolveVisitNotes(ResolveVisitNotesRequest) returns (ResolveVisitNotesResponse);
+
+  // Streams every matching visit note.
+  rpc ExportVisitNotes(ExportVisitNotesRequest) returns (stream ExportVisitNotesResponse);
+
+  // Summarizes a visit note.
+  rpc SummarizeVisitNotes(SummarizeVisitNotesRequest) returns (SummarizeVisitNotesResponse);
+
+  // Lists visit notes a page at a time.
+  rpc SuggestVisitNotes(SuggestVisitNotesRequest) returns (SuggestVisitNotesResponse);
+
+  // Returns a visit note.
+  rpc PeekVisitNote(PeekVisitNoteRequest) returns (PeekVisitNoteResponse);
+}
+
+// The request of `LookupVisitNote`.
+message LookupVisitNoteRequest {
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupVisitNote`.
+message LookupVisitNoteResponse {
+  VisitNote visit_note = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseVisitNotes`.
+message BrowseVisitNotesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VisitNoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseVisitNotesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseVisitNotes`.
+message BrowseVisitNotesResponse {
+  repeated VisitNote visit_notes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountVisitNotes`.
+message CountVisitNotesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VisitNoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountVisitNotesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountVisitNotes`.
+message CountVisitNotesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveVisitNotes`.
+message ResolveVisitNotesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string visit_note_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveVisitNotes`.
+message ResolveVisitNotesResponse {
+  repeated VisitNote visit_notes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportVisitNotes`.
+message ExportVisitNotesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VisitNoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportVisitNotesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportVisitNotes`.
+message ExportVisitNotesResponse {
+  VisitNote visit_note = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeVisitNotes`.
+message SummarizeVisitNotesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  SummarizeVisitNotesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeVisitNotes`.
+message SummarizeVisitNotesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestVisitNotes`.
+message SuggestVisitNotesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VisitNoteStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestVisitNotesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestVisitNotes`.
+message SuggestVisitNotesResponse {
+  repeated VisitNote visit_notes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekVisitNote`.
+message PeekVisitNoteRequest {
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekVisitNote`.
+message PeekVisitNoteResponse {
+  VisitNote visit_note = 1;
+  acme.common.v1.OperationResult result = 2;
+}

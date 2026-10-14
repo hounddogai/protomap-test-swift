@@ -1,0 +1,65 @@
+import AcmePlatform
+import Foundation
+
+extension BedManagement {
+    /// Totals of scheduled discharge plan adjustments by locale.
+    final class ScheduledDischargePlanAdjustmentReport {
+        var title: String
+        var totals: [String: Double]
+        var counts: [String: Int]
+        var generatedAt: Int
+
+        init(title: String, totals: [String: Double], counts: [String: Int], generatedAt: Int) {
+            self.title = title
+            self.totals = totals
+            self.counts = counts
+            self.generatedAt = generatedAt
+        }
+
+        func top(_ countValue: Int) -> [String] {
+            let keys = totals.keys.sorted()
+            let ranked = Kit.Collections.sortedBy(keys, score: { (key: String) -> Double in return self.totals[key, default: 0.0] })
+            return Kit.Collections.take(ranked, countValue: countValue)
+        }
+
+        func render() -> String {
+            let table = Kit.Tables.newTable(title, headers: ["locale", "count", "total", "share"])
+            var grand = 0.0
+            for (_, total) in totals.sorted(by: { $0.key < $1.key }) {
+                grand += total
+            }
+            for (key, total) in totals.sorted(by: { $0.key < $1.key }) {
+                do {
+                    try table.addRow([
+                        key,
+                        String(counts[key, default: 0]),
+                        String(format: "%.2f", total),
+                        "\(Kit.Numbers.percent(total, whole: grand))%",
+                    ])
+                } catch {
+                    continue
+                }
+            }
+            return table.render()
+        }
+    }
+
+    static func buildScheduledDischargePlanAdjustmentReport(_ title: String, items: [ScheduledDischargePlanAdjustment], clock: any Kit.Clocks.Clock) -> ScheduledDischargePlanAdjustmentReport {
+        var totals: [String: Double] = [:]
+        var counts: [String: Int] = [:]
+        for item in items {
+            if item.isTerminal() {
+                continue
+            }
+            let key = item.groupKey()
+            totals[key, default: 0.0] += item.netVolume()
+            counts[key, default: 0] += 1
+        }
+        return ScheduledDischargePlanAdjustmentReport(
+            title: title,
+            totals: totals,
+            counts: counts,
+            generatedAt: clock.now()
+        )
+    }
+}

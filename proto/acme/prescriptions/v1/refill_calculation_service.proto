@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.prescriptions.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/prescriptions/v1/prescriptions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Prescriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/prescriptions/v1;prescriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefillCalculationServiceProto";
+option java_package = "com.acme.prescriptions.v1";
+
+// Computes the figures of a refill, such as totals, taxes, and estimates.
+service RefillCalculationService {
+  // Calculates a refill.
+  rpc CalculateRefill(CalculateRefillRequest) returns (CalculateRefillResponse);
+
+  // Estimates a refill.
+  rpc EstimateRefill(EstimateRefillRequest) returns (EstimateRefillResponse);
+
+  // Quotes a refill.
+  rpc QuoteRefill(QuoteRefillRequest) returns (QuoteRefillResponse);
+
+  // Compares a refill.
+  rpc CompareRefillOptions(CompareRefillOptionsRequest) returns (CompareRefillOptionsResponse);
+
+  // Recalculates a refill.
+  rpc RecalculateRefills(RecalculateRefillsRequest) returns (RecalculateRefillsResponse);
+
+  // Simulates a refill.
+  rpc SimulateRefill(SimulateRefillRequest) returns (SimulateRefillResponse);
+
+  // Explains a refill.
+  rpc ExplainRefillCalculation(ExplainRefillCalculationRequest) returns (ExplainRefillCalculationResponse);
+
+  // Returns a refill.
+  rpc GetRefillRates(GetRefillRatesRequest) returns (GetRefillRatesResponse);
+}
+
+// The request of `CalculateRefill`.
+message CalculateRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  CalculateRefillRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateRefill`.
+message CalculateRefillResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateRefillResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Refill refill = 1;
+  CalculateRefillResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateRefill`.
+message EstimateRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  EstimateRefillRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateRefill`.
+message EstimateRefillResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateRefillResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Refill refill = 1;
+  EstimateRefillResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteRefill`.
+message QuoteRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  QuoteRefillRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteRefill`.
+message QuoteRefillResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteRefillResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Refill refill = 1;
+  QuoteRefillResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareRefillOptions`.
+message CompareRefillOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  CompareRefillOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareRefillOptions`.
+message CompareRefillOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareRefillOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Refill refill = 1;
+  CompareRefillOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateRefills`.
+message RecalculateRefillsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  RecalculateRefillsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateRefills`.
+message RecalculateRefillsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateRefillsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Refill refill = 1;
+  RecalculateRefillsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateRefill`.
+message SimulateRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  SimulateRefillRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateRefill`.
+message SimulateRefillResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateRefillResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Refill refill = 1;
+  SimulateRefillResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainRefillCalculation`.
+message ExplainRefillCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  ExplainRefillCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainRefillCalculation`.
+message ExplainRefillCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  ExplainRefillCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRefillRates`.
+message GetRefillRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRefillRates`.
+message GetRefillRatesResponse {
+  Refill refill = 1;
+  acme.common.v1.OperationResult result = 2;
+}

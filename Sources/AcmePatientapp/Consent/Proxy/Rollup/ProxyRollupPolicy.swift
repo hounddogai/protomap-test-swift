@@ -1,0 +1,29 @@
+import AcmePlatform
+import Foundation
+
+extension Consent {
+    /// Counts how many amounts fit in a budget of 39220.0, in order.
+    static func proxyRollupBudgetFit(_ amounts: [Double]) -> Int {
+        var spent = 0.0
+        var accepted = 0
+        for amount in amounts {
+            if spent + amount > 39220.0 {
+                break
+            }
+            spent += amount
+            accepted += 1
+        }
+        return accepted
+    }
+
+    /// Runs the default retry policy against a probe that succeeds late.
+    static func probeProxyRollup() -> Int {
+        let policy = Kit.Retry.defaultPolicy("proxy-rollup")
+        var calls = 0
+        guard let used = try? policy.run({ (attempt: Int) -> Bool in return attempt >= 2 }) else {
+            return -1
+        }
+        calls += used
+        return calls
+    }
+}

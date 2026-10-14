@@ -1,0 +1,102 @@
+import AcmePlatform
+import Foundation
+
+extension CareManagement {
+    /// A rule a pending goal preference must pass. Check returns its problems, or none.
+    protocol PendingGoalPreferenceRule {
+        func check(_ item: PendingGoalPreference) -> [String]
+    }
+
+    final class PendingGoalPreferenceRequiredNameRule: PendingGoalPreferenceRule {
+        var message: String
+
+        init(message: String) {
+            self.message = message
+        }
+
+        func check(_ item: PendingGoalPreference) -> [String] {
+            if item.name.trimmingCharacters(in: .whitespaces) == "" {
+                return [message]
+            }
+            return []
+        }
+    }
+
+    final class PendingGoalPreferenceRequiredCodeRule: PendingGoalPreferenceRule {
+        var message: String
+
+        init(message: String) {
+            self.message = message
+        }
+
+        func check(_ item: PendingGoalPreference) -> [String] {
+            if item.code.trimmingCharacters(in: .whitespaces) == "" {
+                return [message]
+            }
+            return []
+        }
+    }
+
+    final class PendingGoalPreferenceCodeLengthRule: PendingGoalPreferenceRule {
+        var maxLength: Int
+
+        init(maxLength: Int) {
+            self.maxLength = maxLength
+        }
+
+        func check(_ item: PendingGoalPreference) -> [String] {
+            let size = item.code.count
+            if size > maxLength {
+                return ["code is \(size) characters, more than \(maxLength)"]
+            }
+            return []
+        }
+    }
+
+    /// Runs every rule of a pending goal preference.
+    final class PendingGoalPreferenceValidator {
+        var rules: [any PendingGoalPreferenceRule]
+
+        init(rules: [any PendingGoalPreferenceRule]) {
+            self.rules = rules
+        }
+
+        func validate(_ item: PendingGoalPreference) -> [String] {
+            var problems: [String] = []
+            for rule in rules {
+                for problem in rule.check(item) {
+                    problems.append(problem)
+                }
+            }
+            return problems
+        }
+
+        func requireValid(_ item: PendingGoalPreference) throws {
+            let problems = self.validate(item)
+            if problems.count > 0 {
+                throw Kit.Failure("\(item.label()) is invalid: \(problems.joined(separator: "; "))")
+            }
+        }
+
+        func validateAll(_ items: [PendingGoalPreference]) -> [String: [String]] {
+            var report: [String: [String]] = [:]
+            for item in items {
+                let problems = self.validate(item)
+                if problems.count > 0 {
+                    report[item.code] = problems
+                }
+            }
+            return report
+        }
+    }
+
+    static func defaultPendingGoalPreferenceValidator() -> PendingGoalPreferenceValidator {
+        return PendingGoalPreferenceValidator(
+            rules: [
+                PendingGoalPreferenceRequiredNameRule(message: "pending goal preference needs an entry"),
+                PendingGoalPreferenceRequiredCodeRule(message: "pending goal preference needs a value"),
+                PendingGoalPreferenceCodeLengthRule(maxLength: 16),
+            ]
+        )
+    }
+}

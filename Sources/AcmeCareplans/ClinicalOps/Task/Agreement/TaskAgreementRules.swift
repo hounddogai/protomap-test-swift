@@ -1,0 +1,126 @@
+import AcmePlatform
+import Foundation
+
+extension ClinicalOps {
+    /// A rule a task agreement must pass. Check returns its problems, or none.
+    protocol TaskAgreementRule {
+        func check(_ item: TaskAgreement) -> [String]
+    }
+
+    final class TaskAgreementUpdatedAtRangeRule: TaskAgreementRule {
+        var min: Int
+        var max: Int
+
+        init(min: Int, max: Int) {
+            self.min = min
+            self.max = max
+        }
+
+        func check(_ item: TaskAgreement) -> [String] {
+            let value = item.updatedAt
+            var problems: [String] = []
+            if value < min {
+                problems.append("updated at \(value) is below \(min)")
+            }
+            if value > max {
+                problems.append("updated at \(value) is above \(max)")
+            }
+            return problems
+        }
+    }
+
+    final class TaskAgreementEncounterIDLengthRule: TaskAgreementRule {
+        var maxLength: Int
+
+        init(maxLength: Int) {
+            self.maxLength = maxLength
+        }
+
+        func check(_ item: TaskAgreement) -> [String] {
+            let size = item.encounterID.count
+            if size > maxLength {
+                return ["encounter id is \(size) characters, more than \(maxLength)"]
+            }
+            return []
+        }
+    }
+
+    final class TaskAgreementLabelLengthRule: TaskAgreementRule {
+        var maxLength: Int
+
+        init(maxLength: Int) {
+            self.maxLength = maxLength
+        }
+
+        func check(_ item: TaskAgreement) -> [String] {
+            let size = item.label.count
+            if size > maxLength {
+                return ["label is \(size) characters, more than \(maxLength)"]
+            }
+            return []
+        }
+    }
+
+    final class TaskAgreementRequiredEncounterIDRule: TaskAgreementRule {
+        var message: String
+
+        init(message: String) {
+            self.message = message
+        }
+
+        func check(_ item: TaskAgreement) -> [String] {
+            if item.encounterID.trimmingCharacters(in: .whitespaces) == "" {
+                return [message]
+            }
+            return []
+        }
+    }
+
+    /// Runs every rule of a task agreement.
+    final class TaskAgreementValidator {
+        var rules: [any TaskAgreementRule]
+
+        init(rules: [any TaskAgreementRule]) {
+            self.rules = rules
+        }
+
+        func validate(_ item: TaskAgreement) -> [String] {
+            var problems: [String] = []
+            for rule in rules {
+                for problem in rule.check(item) {
+                    problems.append(problem)
+                }
+            }
+            return problems
+        }
+
+        func requireValid(_ item: TaskAgreement) throws {
+            let problems = self.validate(item)
+            if problems.count > 0 {
+                throw Kit.Failure("\(item.displayLabel()) is invalid: \(problems.joined(separator: "; "))")
+            }
+        }
+
+        func validateAll(_ items: [TaskAgreement]) -> [String: [String]] {
+            var report: [String: [String]] = [:]
+            for item in items {
+                let problems = self.validate(item)
+                if problems.count > 0 {
+                    report[item.code] = problems
+                }
+            }
+            return report
+        }
+    }
+
+    static func defaultTaskAgreementValidator() -> TaskAgreementValidator {
+        return TaskAgreementValidator(
+            rules: [
+                TaskAgreementUpdatedAtRangeRule(min: 32, max: 64),
+                TaskAgreementEncounterIDLengthRule(maxLength: 16),
+                TaskAgreementLabelLengthRule(maxLength: 255),
+                TaskAgreementRequiredEncounterIDRule(message: "task agreement needs this field"),
+            ]
+        )
+    }
+}

@@ -1,0 +1,263 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patientapp.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/patientapp/v1/patientapp.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patientapp.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patientapp/v1;patientappv1";
+option java_multiple_files = true;
+option java_outer_classname = "PatientHomeIntegrationServiceProto";
+option java_package = "com.acme.patientapp.v1";
+
+// Connects external systems that send patient home events.
+service PatientHomeIntegrationService {
+  // Connects a patient home.
+  rpc ConnectPatientHomeSource(ConnectPatientHomeSourceRequest) returns (ConnectPatientHomeSourceResponse);
+
+  // Disconnects a patient home.
+  rpc DisconnectPatientHomeSource(DisconnectPatientHomeSourceRequest) returns (DisconnectPatientHomeSourceResponse);
+
+  // Takes a stream of patient homes and answers once at the end.
+  rpc IngestPatientHomeEvents(stream IngestPatientHomeEventsRequest) returns (IngestPatientHomeEventsResponse);
+
+  // Replays a patient home.
+  rpc ReplayPatientHomeEvents(ReplayPatientHomeEventsRequest) returns (ReplayPatientHomeEventsResponse);
+
+  // Acknowledges a patient home.
+  rpc AcknowledgePatientHomeEvent(AcknowledgePatientHomeEventRequest) returns (AcknowledgePatientHomeEventResponse);
+
+  // Exchanges changes of patient homes with a peer.
+  rpc RelayPatientHomeMessages(stream RelayPatientHomeMessagesRequest) returns (stream RelayPatientHomeMessagesResponse);
+
+  // Lists patient homes a page at a time.
+  rpc ListPatientHomeSources(ListPatientHomeSourcesRequest) returns (ListPatientHomeSourcesResponse);
+}
+
+// The request of `ConnectPatientHomeSource`.
+message ConnectPatientHomeSourceRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  ConnectPatientHomeSourceRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ConnectPatientHomeSource`.
+message ConnectPatientHomeSourceResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PatientHome patient_home = 1;
+  ConnectPatientHomeSourceResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DisconnectPatientHomeSource`.
+message DisconnectPatientHomeSourceRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  DisconnectPatientHomeSourceRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `DisconnectPatientHomeSource`.
+message DisconnectPatientHomeSourceResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PatientHome patient_home = 1;
+  DisconnectPatientHomeSourceResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `IngestPatientHomeEvents`.
+message IngestPatientHomeEventsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    IngestPatientHomeEventsRequest.StreamHeader header = 2;
+    PatientHome record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `IngestPatientHomeEvents`.
+message IngestPatientHomeEventsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string patient_home_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated IngestPatientHomeEventsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `ReplayPatientHomeEvents`.
+message ReplayPatientHomeEventsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  ReplayPatientHomeEventsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReplayPatientHomeEvents`.
+message ReplayPatientHomeEventsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PatientHome patient_home = 1;
+  ReplayPatientHomeEventsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AcknowledgePatientHomeEvent`.
+message AcknowledgePatientHomeEventRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string endpoint = 1;
+    google.protobuf.Any envelope = 2;
+    string message_id = 3;
+    string source_system = 4;
+    google.protobuf.Timestamp received_at = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  AcknowledgePatientHomeEventRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `AcknowledgePatientHomeEvent`.
+message AcknowledgePatientHomeEventResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PatientHome patient_home = 1;
+  AcknowledgePatientHomeEventResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RelayPatientHomeMessages`.
+message RelayPatientHomeMessagesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    PatientHome change = 2;
+    RelayPatientHomeMessagesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `RelayPatientHomeMessages`.
+message RelayPatientHomeMessagesResponse {
+  PatientHome patient_home = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ListPatientHomeSources`.
+message ListPatientHomeSourcesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PatientHomeStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPatientHomeSourcesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPatientHomeSources`.
+message ListPatientHomeSourcesResponse {
+  repeated PatientHome patient_homes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

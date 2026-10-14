@@ -1,0 +1,15 @@
+@testable import AcmePatients
+import AcmePlatform
+import Foundation
+import Testing
+
+@Suite struct RevenueCycleMemoryRegionalChargeEntryStoreTests {
+    @Test func findsWhatItSaved() throws {
+        let store: any RevenueCycle.RegionalChargeEntryStore = RevenueCycle.newMemoryRegionalChargeEntryStore()
+        let item = RevenueCycle.newRegionalChargeEntry("code-216", label: "label-822")
+        store.save(item)
+        let found = try #require(store.find(item.code))
+        #expect(found.code == item.code)
+        #expect(store.list().count == 1)
+    }
+}

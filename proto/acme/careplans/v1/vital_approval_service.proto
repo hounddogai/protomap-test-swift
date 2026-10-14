@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.careplans.v1;
+
+import "acme/careplans/v1/careplans.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Careplans.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/careplans/v1;careplansv1";
+option java_multiple_files = true;
+option java_outer_classname = "VitalApprovalServiceProto";
+option java_package = "com.acme.careplans.v1";
+
+// Routes vitals through approval, with escalation and delegation.
+service VitalApprovalService {
+  // Submits a vital.
+  rpc SubmitVital(SubmitVitalRequest) returns (SubmitVitalResponse);
+
+  // Approves a vital.
+  rpc ApproveVital(ApproveVitalRequest) returns (ApproveVitalResponse);
+
+  // Rejects a vital.
+  rpc RejectVital(RejectVitalRequest) returns (RejectVitalResponse);
+
+  // Escalates a vital.
+  rpc EscalateVital(EscalateVitalRequest) returns (EscalateVitalResponse);
+
+  // Lists vitals a page at a time.
+  rpc ListPendingVitals(ListPendingVitalsRequest) returns (ListPendingVitalsResponse);
+
+  // Delegates a vital.
+  rpc DelegateVitalApproval(DelegateVitalApprovalRequest) returns (DelegateVitalApprovalResponse);
+
+  // Recalls a vital.
+  rpc RecallVital(RecallVitalRequest) returns (RecallVitalResponse);
+
+  // Returns a vital.
+  rpc GetVitalApprovalStatus(GetVitalApprovalStatusRequest) returns (GetVitalApprovalStatusResponse);
+
+  // Comments a vital.
+  rpc CommentVitalApproval(CommentVitalApprovalRequest) returns (CommentVitalApprovalResponse);
+}
+
+// The request of `SubmitVital`.
+message SubmitVitalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  SubmitVitalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitVital`.
+message SubmitVitalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  SubmitVitalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveVital`.
+message ApproveVitalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  ApproveVitalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveVital`.
+message ApproveVitalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  ApproveVitalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectVital`.
+message RejectVitalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  RejectVitalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectVital`.
+message RejectVitalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  RejectVitalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateVital`.
+message EscalateVitalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  EscalateVitalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateVital`.
+message EscalateVitalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  EscalateVitalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingVitals`.
+message ListPendingVitalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VitalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingVitalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingVitals`.
+message ListPendingVitalsResponse {
+  repeated Vital vitals = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateVitalApproval`.
+message DelegateVitalApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  DelegateVitalApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateVitalApproval`.
+message DelegateVitalApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  DelegateVitalApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallVital`.
+message RecallVitalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  RecallVitalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallVital`.
+message RecallVitalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  RecallVitalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetVitalApprovalStatus`.
+message GetVitalApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetVitalApprovalStatus`.
+message GetVitalApprovalStatusResponse {
+  Vital vital = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentVitalApproval`.
+message CommentVitalApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  CommentVitalApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentVitalApproval`.
+message CommentVitalApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  CommentVitalApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

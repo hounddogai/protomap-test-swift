@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PatientApprovalServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Routes patients through approval, with escalation and delegation.
+service PatientApprovalService {
+  // Submits a patient.
+  rpc SubmitPatient(SubmitPatientRequest) returns (SubmitPatientResponse);
+
+  // Approves a patient.
+  rpc ApprovePatient(ApprovePatientRequest) returns (ApprovePatientResponse);
+
+  // Rejects a patient.
+  rpc RejectPatient(RejectPatientRequest) returns (RejectPatientResponse);
+
+  // Escalates a patient.
+  rpc EscalatePatient(EscalatePatientRequest) returns (EscalatePatientResponse);
+
+  // Lists patients a page at a time.
+  rpc ListPendingPatients(ListPendingPatientsRequest) returns (ListPendingPatientsResponse);
+
+  // Delegates a patient.
+  rpc DelegatePatientApproval(DelegatePatientApprovalRequest) returns (DelegatePatientApprovalResponse);
+
+  // Recalls a patient.
+  rpc RecallPatient(RecallPatientRequest) returns (RecallPatientResponse);
+
+  // Returns a patient.
+  rpc GetPatientApprovalStatus(GetPatientApprovalStatusRequest) returns (GetPatientApprovalStatusResponse);
+}
+
+// The request of `SubmitPatient`.
+message SubmitPatientRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  SubmitPatientRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitPatient`.
+message SubmitPatientResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  SubmitPatientResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApprovePatient`.
+message ApprovePatientRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  ApprovePatientRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApprovePatient`.
+message ApprovePatientResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  ApprovePatientResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectPatient`.
+message RejectPatientRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  RejectPatientRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectPatient`.
+message RejectPatientResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  RejectPatientResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalatePatient`.
+message EscalatePatientRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  EscalatePatientRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalatePatient`.
+message EscalatePatientResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  EscalatePatientResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingPatients`.
+message ListPendingPatientsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PatientStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingPatientsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingPatients`.
+message ListPendingPatientsResponse {
+  repeated Patient patients = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegatePatientApproval`.
+message DelegatePatientApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  DelegatePatientApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegatePatientApproval`.
+message DelegatePatientApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  DelegatePatientApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallPatient`.
+message RecallPatientRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  RecallPatientRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallPatient`.
+message RecallPatientResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  RecallPatientResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPatientApprovalStatus`.
+message GetPatientApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPatientApprovalStatus`.
+message GetPatientApprovalStatusResponse {
+  Patient patient = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.telehealth.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/telehealth/v1/telehealth.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Telehealth.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/telehealth/v1;telehealthv1";
+option java_multiple_files = true;
+option java_outer_classname = "VideoVisitApprovalServiceProto";
+option java_package = "com.acme.telehealth.v1";
+
+// Routes video visits through approval, with escalation and delegation.
+service VideoVisitApprovalService {
+  // Submits a video visit.
+  rpc SubmitVideoVisit(SubmitVideoVisitRequest) returns (SubmitVideoVisitResponse);
+
+  // Approves a video visit.
+  rpc ApproveVideoVisit(ApproveVideoVisitRequest) returns (ApproveVideoVisitResponse);
+
+  // Rejects a video visit.
+  rpc RejectVideoVisit(RejectVideoVisitRequest) returns (RejectVideoVisitResponse);
+
+  // Lists video visits a page at a time.
+  rpc ListPendingVideoVisits(ListPendingVideoVisitsRequest) returns (ListPendingVideoVisitsResponse);
+
+  // Delegates a video visit.
+  rpc DelegateVideoVisitApproval(DelegateVideoVisitApprovalRequest) returns (DelegateVideoVisitApprovalResponse);
+
+  // Recalls a video visit.
+  rpc RecallVideoVisit(RecallVideoVisitRequest) returns (RecallVideoVisitResponse);
+
+  // Returns a video visit.
+  rpc GetVideoVisitApprovalStatus(GetVideoVisitApprovalStatusRequest) returns (GetVideoVisitApprovalStatusResponse);
+
+  // Comments a video visit.
+  rpc CommentVideoVisitApproval(CommentVideoVisitApprovalRequest) returns (CommentVideoVisitApprovalResponse);
+}
+
+// The request of `SubmitVideoVisit`.
+message SubmitVideoVisitRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  SubmitVideoVisitRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitVideoVisit`.
+message SubmitVideoVisitResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VideoVisit video_visit = 1;
+  SubmitVideoVisitResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveVideoVisit`.
+message ApproveVideoVisitRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  ApproveVideoVisitRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveVideoVisit`.
+message ApproveVideoVisitResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VideoVisit video_visit = 1;
+  ApproveVideoVisitResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectVideoVisit`.
+message RejectVideoVisitRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  RejectVideoVisitRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectVideoVisit`.
+message RejectVideoVisitResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VideoVisit video_visit = 1;
+  RejectVideoVisitResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingVideoVisits`.
+message ListPendingVideoVisitsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VideoVisitStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingVideoVisitsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingVideoVisits`.
+message ListPendingVideoVisitsResponse {
+  repeated VideoVisit video_visits = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateVideoVisitApproval`.
+message DelegateVideoVisitApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  DelegateVideoVisitApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateVideoVisitApproval`.
+message DelegateVideoVisitApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VideoVisit video_visit = 1;
+  DelegateVideoVisitApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallVideoVisit`.
+message RecallVideoVisitRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  RecallVideoVisitRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallVideoVisit`.
+message RecallVideoVisitResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VideoVisit video_visit = 1;
+  RecallVideoVisitResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetVideoVisitApprovalStatus`.
+message GetVideoVisitApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetVideoVisitApprovalStatus`.
+message GetVideoVisitApprovalStatusResponse {
+  VideoVisit video_visit = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentVideoVisitApproval`.
+message CommentVideoVisitApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  CommentVideoVisitApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentVideoVisitApproval`.
+message CommentVideoVisitApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VideoVisit video_visit = 1;
+  CommentVideoVisitApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

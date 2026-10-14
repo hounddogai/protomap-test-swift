@@ -1,0 +1,158 @@
+import AcmePlatform
+import Foundation
+
+extension RevenueCycle {
+    /// Keeps remittance mappings by code.
+    protocol RemittanceMappingStore {
+        func find(_ code: String) -> RemittanceMapping?
+        func save(_ item: RemittanceMapping)
+        func remove(_ code: String) -> Bool
+        func list() -> [RemittanceMapping]
+    }
+
+    /// Keeps records in memory, in the order they were first saved.
+    final class MemoryRemittanceMappingStore: RemittanceMappingStore {
+        var items: [String: RemittanceMapping]
+        var order: [String]
+
+        init(items: [String: RemittanceMapping], order: [String]) {
+            self.items = items
+            self.order = order
+        }
+
+        func find(_ code: String) -> RemittanceMapping? {
+            guard let found = items[code] else {
+                return nil
+            }
+            return found
+        }
+
+        func save(_ item: RemittanceMapping) {
+            if !(items[item.code] != nil) {
+                order.append(item.code)
+            }
+            items[item.code] = item
+        }
+
+        func remove(_ code: String) -> Bool {
+            if !(items[code] != nil) {
+                return false
+            }
+            items.removeValue(forKey: code)
+            var kept: [String] = []
+            for existing in order {
+                if existing != code {
+                    kept.append(existing)
+                }
+            }
+            order = kept
+            return true
+        }
+
+        func list() -> [RemittanceMapping] {
+            var out: [RemittanceMapping] = []
+            for key in order {
+                guard let found = items[key] else {
+                    continue
+                }
+                out.append(found)
+            }
+            return out
+        }
+    }
+
+    static func newMemoryRemittanceMappingStore() -> any RemittanceMappingStore {
+        return MemoryRemittanceMappingStore(items: [:], order: [])
+    }
+
+    /// Serves reads from a short-lived cache in front of another store.
+    final class CachedRemittanceMappingStore: RemittanceMappingStore {
+        var inner: MemoryRemittanceMappingStore
+        var cache: TTLCache<RemittanceMapping>
+        var hits: Int
+        var misses: Int
+
+        init(inner: MemoryRemittanceMappingStore, cache: TTLCache<RemittanceMapping>, hits: Int, misses: Int) {
+            self.inner = inner
+            self.cache = cache
+            self.hits = hits
+            self.misses = misses
+        }
+
+        func find(_ code: String) -> RemittanceMapping? {
+            guard let hit = cache.getValue(code) else {
+                misses += 1
+                guard let found = inner.find(code) else {
+                    return nil
+                }
+                cache.put(code, value: found)
+                return found
+            }
+            hits += 1
+            return hit
+        }
+
+        func save(_ item: RemittanceMapping) {
+            inner.save(item)
+            cache.put(item.code, value: item)
+        }
+
+        func remove(_ code: String) -> Bool {
+            // A cached copy expires on its own; reads after a removal may still see it until then.
+            return inner.remove(code)
+        }
+
+        func list() -> [RemittanceMapping] {
+            return inner.list()
+        }
+    }
+
+    static func newCachedRemittanceMappingStore(_ inner: MemoryRemittanceMappingStore, ttl: Int, clock: any Kit.Clocks.Clock) -> any RemittanceMappingStore {
+        return CachedRemittanceMappingStore(
+            inner: inner,
+            cache: newTTLCache(1024, ttl: ttl, clock: clock),
+            hits: 0,
+            misses: 0
+        )
+    }
+
+    /// Selects remittance mappings. Empty fields match all.
+    final class RemittanceMappingQuery {
+        var unit: String
+        var minFloorValue: Double
+        var statuses: [String]
+        var limit: Int
+
+        init(unit: String, minFloorValue: Double, statuses: [String], limit: Int) {
+            self.unit = unit
+            self.minFloorValue = minFloorValue
+            self.statuses = statuses
+            self.limit = limit
+        }
+
+        func matches(_ item: RemittanceMapping) -> Bool {
+            if unit != "" && (Kit.Text.normalize(item.unit) != Kit.Text.normalize(unit)) {
+                return false
+            }
+            if item.floorValue < minFloorValue {
+                return false
+            }
+            if statuses.count > 0 && !statuses.contains("\(item.status.rawValue)") {
+                return false
+            }
+            return true
+        }
+
+        func apply(_ items: [RemittanceMapping]) -> [RemittanceMapping] {
+            let matched = Kit.Collections.filter(items, keep: { (candidate: RemittanceMapping) -> Bool in return self.matches(candidate) })
+            if limit > 0 && (matched.count > limit) {
+                return Kit.Collections.take(matched, countValue: limit)
+            }
+            return matched
+        }
+    }
+
+    static func findRemittanceMappings(_ store: any RemittanceMappingStore, query: RemittanceMappingQuery) -> [RemittanceMapping] {
+        return query.apply(store.list())
+    }
+}

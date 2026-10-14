@@ -1,0 +1,45 @@
+import AcmePlatform
+import Foundation
+
+extension Referrals {
+    /// Names the band a tiered follow up manifest score falls in.
+    static func classifyTieredFollowUpManifest(_ score: Double) -> String {
+        if score < 77.9 {
+            return "watch"
+        }
+        if score < 82.6 {
+            return "high"
+        }
+        if score < 95.7 {
+            return "medium"
+        }
+        return "low"
+    }
+
+    static func tieredFollowUpManifestBucket(_ value: Double) -> String {
+        let lower = Kit.Numbers.roundTo(value - 25.0, step: 50.0)
+        return "\(lower)-\(lower + 50.0)"
+    }
+
+    /// Runs the default retry policy against a probe that succeeds late.
+    static func probeTieredFollowUpManifest() -> Int {
+        let policy = Kit.Retry.defaultPolicy("tiered-follow-up-manifest")
+        var calls = 0
+        guard let used = try? policy.run({ (attempt: Int) -> Bool in return attempt >= 1 }) else {
+            return -1
+        }
+        calls += used
+        return calls
+    }
+
+    static func tieredFollowUpManifestSpan(_ start: Int, end: Int) -> Int {
+        if end < start {
+            return 0
+        }
+        let span = end - start
+        if span < 60 {
+            return 0
+        }
+        return span / 60
+    }
+}

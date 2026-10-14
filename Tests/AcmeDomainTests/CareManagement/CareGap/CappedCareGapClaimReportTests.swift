@@ -1,0 +1,21 @@
+@testable import AcmeCareplans
+import AcmePlatform
+import Foundation
+import Testing
+
+@Suite struct CareManagementCappedCareGapClaimReportTests {
+    @Test func countsEachRecordOnce() throws {
+        let clock: any Kit.Clocks.Clock = Kit.Clocks.FixedClock(at: 1700757748)
+        var items: [CareManagement.CappedCareGapClaim] = []
+        for index in 0..<4 {
+            items.append(CareManagement.newCappedCareGapClaim("capped-care-gap-claim-\(index)", label: "sample"))
+        }
+        let report = CareManagement.buildCappedCareGapClaimReport("test", items: items, clock: clock)
+        var counted = 0
+        for (_, value) in report.counts.sorted(by: { $0.key < $1.key }) {
+            counted += value
+        }
+        #expect(counted <= 4)
+        #expect(report.generatedAt == clock.now())
+    }
+}

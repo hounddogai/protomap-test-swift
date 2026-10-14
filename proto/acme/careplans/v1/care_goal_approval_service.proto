@@ -1,0 +1,316 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.careplans.v1;
+
+import "acme/careplans/v1/careplans.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Careplans.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/careplans/v1;careplansv1";
+option java_multiple_files = true;
+option java_outer_classname = "CareGoalApprovalServiceProto";
+option java_package = "com.acme.careplans.v1";
+
+// Routes care goals through approval, with escalation and delegation.
+service CareGoalApprovalService {
+  // Submits a care goal.
+  rpc SubmitCareGoal(SubmitCareGoalRequest) returns (SubmitCareGoalResponse);
+
+  // Approves a care goal.
+  rpc ApproveCareGoal(ApproveCareGoalRequest) returns (ApproveCareGoalResponse);
+
+  // Rejects a care goal.
+  rpc RejectCareGoal(RejectCareGoalRequest) returns (RejectCareGoalResponse);
+
+  // Escalates a care goal.
+  rpc EscalateCareGoal(EscalateCareGoalRequest) returns (EscalateCareGoalResponse);
+
+  // Lists care goals a page at a time.
+  rpc ListPendingCareGoals(ListPendingCareGoalsRequest) returns (ListPendingCareGoalsResponse);
+
+  // Delegates a care goal.
+  rpc DelegateCareGoalApproval(DelegateCareGoalApprovalRequest) returns (DelegateCareGoalApprovalResponse);
+
+  // Recalls a care goal.
+  rpc RecallCareGoal(RecallCareGoalRequest) returns (RecallCareGoalResponse);
+
+  // Comments a care goal.
+  rpc CommentCareGoalApproval(CommentCareGoalApprovalRequest) returns (CommentCareGoalApprovalResponse);
+}
+
+// The request of `SubmitCareGoal`.
+message SubmitCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  SubmitCareGoalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitCareGoal`.
+message SubmitCareGoalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  SubmitCareGoalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveCareGoal`.
+message ApproveCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  ApproveCareGoalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveCareGoal`.
+message ApproveCareGoalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  ApproveCareGoalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectCareGoal`.
+message RejectCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  RejectCareGoalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectCareGoal`.
+message RejectCareGoalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  RejectCareGoalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateCareGoal`.
+message EscalateCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  EscalateCareGoalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateCareGoal`.
+message EscalateCareGoalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  EscalateCareGoalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingCareGoals`.
+message ListPendingCareGoalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareGoalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingCareGoalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingCareGoals`.
+message ListPendingCareGoalsResponse {
+  repeated CareGoal care_goals = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateCareGoalApproval`.
+message DelegateCareGoalApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  DelegateCareGoalApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateCareGoalApproval`.
+message DelegateCareGoalApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  DelegateCareGoalApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallCareGoal`.
+message RecallCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  RecallCareGoalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallCareGoal`.
+message RecallCareGoalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  RecallCareGoalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CommentCareGoalApproval`.
+message CommentCareGoalApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  CommentCareGoalApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentCareGoalApproval`.
+message CommentCareGoalApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  CommentCareGoalApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

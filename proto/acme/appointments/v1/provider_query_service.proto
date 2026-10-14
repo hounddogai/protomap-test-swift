@@ -1,0 +1,214 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.appointments.v1;
+
+import "acme/appointments/v1/appointments.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Appointments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/appointments/v1;appointmentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProviderQueryServiceProto";
+option java_package = "com.acme.appointments.v1";
+
+// Answers read-only questions about providers, for screens and reports.
+service ProviderQueryService {
+  // Returns a provider.
+  rpc LookupProvider(LookupProviderRequest) returns (LookupProviderResponse);
+
+  // Lists providers a page at a time.
+  rpc BrowseProviders(BrowseProvidersRequest) returns (BrowseProvidersResponse);
+
+  // Lists providers a page at a time.
+  rpc FindProviders(FindProvidersRequest) returns (FindProvidersResponse);
+
+  // Counts providers by status.
+  rpc CountProviders(CountProvidersRequest) returns (CountProvidersResponse);
+
+  // Returns several providers at once.
+  rpc ResolveProviders(ResolveProvidersRequest) returns (ResolveProvidersResponse);
+
+  // Streams every matching provider.
+  rpc ExportProviders(ExportProvidersRequest) returns (stream ExportProvidersResponse);
+
+  // Lists providers a page at a time.
+  rpc SuggestProviders(SuggestProvidersRequest) returns (SuggestProvidersResponse);
+
+  // Returns a provider.
+  rpc PeekProvider(PeekProviderRequest) returns (PeekProviderResponse);
+}
+
+// The request of `LookupProvider`.
+message LookupProviderRequest {
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupProvider`.
+message LookupProviderResponse {
+  Provider provider = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseProviders`.
+message BrowseProvidersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProviderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseProvidersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseProviders`.
+message BrowseProvidersResponse {
+  repeated Provider providers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindProviders`.
+message FindProvidersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProviderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindProvidersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindProviders`.
+message FindProvidersResponse {
+  repeated Provider providers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountProviders`.
+message CountProvidersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProviderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountProvidersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountProviders`.
+message CountProvidersResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveProviders`.
+message ResolveProvidersRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string provider_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveProviders`.
+message ResolveProvidersResponse {
+  repeated Provider providers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportProviders`.
+message ExportProvidersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProviderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportProvidersRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportProviders`.
+message ExportProvidersResponse {
+  Provider provider = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestProviders`.
+message SuggestProvidersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProviderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestProvidersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestProviders`.
+message SuggestProvidersResponse {
+  repeated Provider providers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekProvider`.
+message PeekProviderRequest {
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekProvider`.
+message PeekProviderResponse {
+  Provider provider = 1;
+  acme.common.v1.OperationResult result = 2;
+}

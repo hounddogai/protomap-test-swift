@@ -1,0 +1,14 @@
+@testable import AcmePatientapp
+import AcmePlatform
+import Foundation
+import Testing
+
+@Suite struct ConsentPendingProxyScheduleEngineTests {
+    @Test func keepsResultsWithinBounds() throws {
+        let engine = Consent.defaultPendingProxyScheduleEngine(Kit.Flags.newRegistry())
+        let item = Consent.newPendingProxySchedule("code-372", title: "title-328")
+        let result = engine.price(item)
+        #expect(result >= engine.floor && (result <= engine.ceiling))
+        #expect(engine.trace.count >= 0)
+    }
+}

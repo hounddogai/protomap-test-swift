@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.prescriptions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/prescriptions/v1/prescriptions.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Prescriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/prescriptions/v1;prescriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefillWorkflowServiceProto";
+option java_package = "com.acme.prescriptions.v1";
+
+// Runs the long-lived workflow that takes a refill from start to finish.
+service RefillWorkflowService {
+  // Starts a refill.
+  rpc StartRefillWorkflow(StartRefillWorkflowRequest) returns (StartRefillWorkflowResponse);
+
+  // Advances a refill.
+  rpc AdvanceRefillWorkflow(AdvanceRefillWorkflowRequest) returns (AdvanceRefillWorkflowResponse);
+
+  // Cancels a refill.
+  rpc CancelRefillWorkflow(CancelRefillWorkflowRequest) returns (CancelRefillWorkflowResponse);
+
+  // Retrys a refill.
+  rpc RetryRefillWorkflow(RetryRefillWorkflowRequest) returns (RetryRefillWorkflowResponse);
+
+  // Pauses a refill.
+  rpc PauseRefillWorkflow(PauseRefillWorkflowRequest) returns (PauseRefillWorkflowResponse);
+
+  // Resumes a refill.
+  rpc ResumeRefillWorkflow(ResumeRefillWorkflowRequest) returns (ResumeRefillWorkflowResponse);
+
+  // Returns a refill.
+  rpc InspectRefillWorkflow(InspectRefillWorkflowRequest) returns (InspectRefillWorkflowResponse);
+
+  // Lists refills a page at a time.
+  rpc ListRefillWorkflows(ListRefillWorkflowsRequest) returns (ListRefillWorkflowsResponse);
+
+  // Signals a refill.
+  rpc SignalRefillWorkflow(SignalRefillWorkflowRequest) returns (SignalRefillWorkflowResponse);
+}
+
+// The request of `StartRefillWorkflow`.
+message StartRefillWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  StartRefillWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartRefillWorkflow`.
+message StartRefillWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  StartRefillWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceRefillWorkflow`.
+message AdvanceRefillWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  AdvanceRefillWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceRefillWorkflow`.
+message AdvanceRefillWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  AdvanceRefillWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelRefillWorkflow`.
+message CancelRefillWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  CancelRefillWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelRefillWorkflow`.
+message CancelRefillWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  CancelRefillWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryRefillWorkflow`.
+message RetryRefillWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  RetryRefillWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryRefillWorkflow`.
+message RetryRefillWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  RetryRefillWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseRefillWorkflow`.
+message PauseRefillWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  PauseRefillWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseRefillWorkflow`.
+message PauseRefillWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  PauseRefillWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeRefillWorkflow`.
+message ResumeRefillWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  ResumeRefillWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeRefillWorkflow`.
+message ResumeRefillWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  ResumeRefillWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectRefillWorkflow`.
+message InspectRefillWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectRefillWorkflow`.
+message InspectRefillWorkflowResponse {
+  Refill refill = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListRefillWorkflows`.
+message ListRefillWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RefillStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListRefillWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListRefillWorkflows`.
+message ListRefillWorkflowsResponse {
+  repeated Refill refills = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalRefillWorkflow`.
+message SignalRefillWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  SignalRefillWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalRefillWorkflow`.
+message SignalRefillWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  SignalRefillWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

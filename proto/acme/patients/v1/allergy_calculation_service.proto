@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/field_mask.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "AllergyCalculationServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Computes the figures of an allergy, such as totals, taxes, and estimates.
+service AllergyCalculationService {
+  // Calculates an allergy.
+  rpc CalculateAllergy(CalculateAllergyRequest) returns (CalculateAllergyResponse);
+
+  // Estimates an allergy.
+  rpc EstimateAllergy(EstimateAllergyRequest) returns (EstimateAllergyResponse);
+
+  // Quotes an allergy.
+  rpc QuoteAllergy(QuoteAllergyRequest) returns (QuoteAllergyResponse);
+
+  // Compares an allergy.
+  rpc CompareAllergyOptions(CompareAllergyOptionsRequest) returns (CompareAllergyOptionsResponse);
+
+  // Recalculates an allergy.
+  rpc RecalculateAllergies(RecalculateAllergiesRequest) returns (RecalculateAllergiesResponse);
+
+  // Simulates an allergy.
+  rpc SimulateAllergy(SimulateAllergyRequest) returns (SimulateAllergyResponse);
+
+  // Returns an allergy.
+  rpc GetAllergyRates(GetAllergyRatesRequest) returns (GetAllergyRatesResponse);
+}
+
+// The request of `CalculateAllergy`.
+message CalculateAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  CalculateAllergyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateAllergy`.
+message CalculateAllergyResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateAllergyResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Allergy allergy = 1;
+  CalculateAllergyResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateAllergy`.
+message EstimateAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  EstimateAllergyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateAllergy`.
+message EstimateAllergyResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateAllergyResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Allergy allergy = 1;
+  EstimateAllergyResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteAllergy`.
+message QuoteAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  QuoteAllergyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteAllergy`.
+message QuoteAllergyResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteAllergyResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Allergy allergy = 1;
+  QuoteAllergyResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareAllergyOptions`.
+message CompareAllergyOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  CompareAllergyOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareAllergyOptions`.
+message CompareAllergyOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareAllergyOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Allergy allergy = 1;
+  CompareAllergyOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateAllergies`.
+message RecalculateAllergiesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  RecalculateAllergiesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateAllergies`.
+message RecalculateAllergiesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateAllergiesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Allergy allergy = 1;
+  RecalculateAllergiesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateAllergy`.
+message SimulateAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  SimulateAllergyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateAllergy`.
+message SimulateAllergyResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateAllergyResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Allergy allergy = 1;
+  SimulateAllergyResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetAllergyRates`.
+message GetAllergyRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAllergyRates`.
+message GetAllergyRatesResponse {
+  Allergy allergy = 1;
+  acme.common.v1.OperationResult result = 2;
+}

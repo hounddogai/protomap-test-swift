@@ -1,0 +1,255 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.careplans.v1;
+
+import "acme/careplans/v1/careplans.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Careplans.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/careplans/v1;careplansv1";
+option java_multiple_files = true;
+option java_outer_classname = "CareGoalLifecycleServiceProto";
+option java_package = "com.acme.careplans.v1";
+
+// Moves a care goal between the states of its lifecycle.
+service CareGoalLifecycleService {
+  // Activates a care goal.
+  rpc ActivateCareGoal(ActivateCareGoalRequest) returns (ActivateCareGoalResponse);
+
+  // Suspends a care goal.
+  rpc SuspendCareGoal(SuspendCareGoalRequest) returns (SuspendCareGoalResponse);
+
+  // Reinstates a care goal.
+  rpc ReinstateCareGoal(ReinstateCareGoalRequest) returns (ReinstateCareGoalResponse);
+
+  // Terminates a care goal.
+  rpc TerminateCareGoal(TerminateCareGoalRequest) returns (TerminateCareGoalResponse);
+
+  // Renews a care goal.
+  rpc RenewCareGoal(RenewCareGoalRequest) returns (RenewCareGoalResponse);
+
+  // Expires a care goal.
+  rpc ExpireCareGoal(ExpireCareGoalRequest) returns (ExpireCareGoalResponse);
+
+  // Returns a care goal.
+  rpc GetCareGoalLifecycle(GetCareGoalLifecycleRequest) returns (GetCareGoalLifecycleResponse);
+}
+
+// The request of `ActivateCareGoal`.
+message ActivateCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  ActivateCareGoalRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateCareGoal`.
+message ActivateCareGoalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  ActivateCareGoalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendCareGoal`.
+message SuspendCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  SuspendCareGoalRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendCareGoal`.
+message SuspendCareGoalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  SuspendCareGoalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateCareGoal`.
+message ReinstateCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  ReinstateCareGoalRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateCareGoal`.
+message ReinstateCareGoalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  ReinstateCareGoalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateCareGoal`.
+message TerminateCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  TerminateCareGoalRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateCareGoal`.
+message TerminateCareGoalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  TerminateCareGoalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewCareGoal`.
+message RenewCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  RenewCareGoalRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewCareGoal`.
+message RenewCareGoalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  RenewCareGoalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireCareGoal`.
+message ExpireCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  ExpireCareGoalRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireCareGoal`.
+message ExpireCareGoalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  ExpireCareGoalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCareGoalLifecycle`.
+message GetCareGoalLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCareGoalLifecycle`.
+message GetCareGoalLifecycleResponse {
+  CareGoal care_goal = 1;
+  acme.common.v1.OperationResult result = 2;
+}

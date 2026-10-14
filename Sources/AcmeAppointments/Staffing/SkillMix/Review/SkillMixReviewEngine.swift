@@ -1,0 +1,128 @@
+import AcmePlatform
+import Foundation
+
+extension Staffing {
+    /// One step of the skill mix review calculation.
+    protocol SkillMixReviewModifier {
+        func describe() -> String
+        func adjust(_ item: SkillMixReview, value: Double) -> Double
+    }
+
+    final class PercentSkillMixReviewAdjuster: SkillMixReviewModifier {
+        var percent: Double
+
+        init(percent: Double) {
+            self.percent = percent
+        }
+
+        func describe() -> String {
+            return "\(percent)% change"
+        }
+
+        func adjust(_ item: SkillMixReview, value: Double) -> Double {
+            return value * (1.0 + percent / 100.0)
+        }
+    }
+
+    final class MinimumSkillMixReviewAdjuster: SkillMixReviewModifier {
+        var minimum: Double
+
+        init(minimum: Double) {
+            self.minimum = minimum
+        }
+
+        func describe() -> String {
+            return "at least \(minimum)"
+        }
+
+        func adjust(_ item: SkillMixReview, value: Double) -> Double {
+            if value < minimum {
+                return minimum
+            }
+            return value
+        }
+    }
+
+    final class FlaggedSkillMixReviewAdjuster: SkillMixReviewModifier {
+        var flags: Kit.Flags.Registry
+        var flag: String
+        var percent: Double
+
+        init(flags: Kit.Flags.Registry, flag: String, percent: Double) {
+            self.flags = flags
+            self.flag = flag
+            self.percent = percent
+        }
+
+        func describe() -> String {
+            return "\(percent) when \(flag) is on"
+        }
+
+        func adjust(_ item: SkillMixReview, value: Double) -> Double {
+            if !flags.enabled(flag, subject: item.code) {
+                return value
+            }
+            return value * (1.0 + percent / 100.0)
+        }
+    }
+
+    /// Runs the skill mix review steps in order and keeps a trace of each.
+    final class SkillMixReviewEngine {
+        var steps: [any SkillMixReviewModifier]
+        var trace: [String]
+        var floor: Double
+        var ceiling: Double
+
+        init(steps: [any SkillMixReviewModifier], trace: [String], floor: Double, ceiling: Double) {
+            self.steps = steps
+            self.trace = trace
+            self.floor = floor
+            self.ceiling = ceiling
+        }
+
+        func run(_ item: SkillMixReview) -> Double {
+            var current = item.netLoad()
+            trace = []
+            for index in 0..<steps.count {
+                let step: any SkillMixReviewModifier = steps[index]
+                let before = current
+                current = step.adjust(item, value: current)
+                if before != current {
+                    trace.append("\(index + 1). \(step.describe()) changed \(before) to \(current)")
+                }
+            }
+            if current < floor {
+                return floor
+            }
+            if current > ceiling {
+                return ceiling
+            }
+            return current
+        }
+
+        func explain() -> String {
+            return trace.joined(separator: "\n")
+        }
+
+        func evaluateAll(_ items: [SkillMixReview]) -> [String: Double] {
+            var results: [String: Double] = [:]
+            for item in items {
+                results[item.code] = self.run(item)
+            }
+            return results
+        }
+    }
+
+    static func defaultSkillMixReviewEngine(_ flags: Kit.Flags.Registry) -> SkillMixReviewEngine {
+        return SkillMixReviewEngine(
+            steps: [
+                PercentSkillMixReviewAdjuster(percent: -8.5),
+                MinimumSkillMixReviewAdjuster(minimum: 39.2),
+                FlaggedSkillMixReviewAdjuster(flags: flags, flag: "skill-mix-review-strict", percent: -7.8),
+            ],
+            trace: [],
+            floor: 4.6,
+            ceiling: 44192.6
+        )
+    }
+}

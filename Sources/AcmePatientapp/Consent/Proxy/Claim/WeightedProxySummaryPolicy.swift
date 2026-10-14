@@ -1,0 +1,41 @@
+import AcmePlatform
+import Foundation
+
+extension Consent {
+    /// Puts a weighted proxy summary code in its canonical WPS- form.
+    static func normalizeWeightedProxySummaryCode(_ code: String) -> String {
+        let clean = code.trimmingCharacters(in: .whitespaces).uppercased()
+        if clean == "" {
+            return ""
+        }
+        if clean.hasPrefix("WPS-") {
+            return clean
+        }
+        return "WPS-\(clean.replacingOccurrences(of: " ", with: "-"))"
+    }
+
+    /// Counts how many amounts fit in a budget of 5168.0, in order.
+    static func weightedProxySummaryBudgetFit(_ amounts: [Double]) -> Int {
+        var spent = 0.0
+        var accepted = 0
+        for amount in amounts {
+            if spent + amount > 5168.0 {
+                break
+            }
+            spent += amount
+            accepted += 1
+        }
+        return accepted
+    }
+
+    static func weightedProxySummarySpan(_ start: Int, end: Int) -> Int {
+        if end < start {
+            return 0
+        }
+        let span = end - start
+        if span < 900 {
+            return 0
+        }
+        return span / 3600
+    }
+}

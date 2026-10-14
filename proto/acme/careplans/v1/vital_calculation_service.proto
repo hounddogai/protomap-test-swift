@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.careplans.v1;
+
+import "acme/careplans/v1/careplans.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Careplans.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/careplans/v1;careplansv1";
+option java_multiple_files = true;
+option java_outer_classname = "VitalCalculationServiceProto";
+option java_package = "com.acme.careplans.v1";
+
+// Computes the figures of a vital, such as totals, taxes, and estimates.
+service VitalCalculationService {
+  // Calculates a vital.
+  rpc CalculateVital(CalculateVitalRequest) returns (CalculateVitalResponse);
+
+  // Estimates a vital.
+  rpc EstimateVital(EstimateVitalRequest) returns (EstimateVitalResponse);
+
+  // Quotes a vital.
+  rpc QuoteVital(QuoteVitalRequest) returns (QuoteVitalResponse);
+
+  // Compares a vital.
+  rpc CompareVitalOptions(CompareVitalOptionsRequest) returns (CompareVitalOptionsResponse);
+
+  // Recalculates a vital.
+  rpc RecalculateVitals(RecalculateVitalsRequest) returns (RecalculateVitalsResponse);
+
+  // Simulates a vital.
+  rpc SimulateVital(SimulateVitalRequest) returns (SimulateVitalResponse);
+
+  // Explains a vital.
+  rpc ExplainVitalCalculation(ExplainVitalCalculationRequest) returns (ExplainVitalCalculationResponse);
+
+  // Returns a vital.
+  rpc GetVitalRates(GetVitalRatesRequest) returns (GetVitalRatesResponse);
+}
+
+// The request of `CalculateVital`.
+message CalculateVitalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  CalculateVitalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateVital`.
+message CalculateVitalResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateVitalResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Vital vital = 1;
+  CalculateVitalResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateVital`.
+message EstimateVitalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  EstimateVitalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateVital`.
+message EstimateVitalResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateVitalResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Vital vital = 1;
+  EstimateVitalResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteVital`.
+message QuoteVitalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  QuoteVitalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteVital`.
+message QuoteVitalResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteVitalResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Vital vital = 1;
+  QuoteVitalResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareVitalOptions`.
+message CompareVitalOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  CompareVitalOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareVitalOptions`.
+message CompareVitalOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareVitalOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Vital vital = 1;
+  CompareVitalOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateVitals`.
+message RecalculateVitalsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  RecalculateVitalsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateVitals`.
+message RecalculateVitalsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateVitalsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Vital vital = 1;
+  RecalculateVitalsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateVital`.
+message SimulateVitalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  SimulateVitalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateVital`.
+message SimulateVitalResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateVitalResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Vital vital = 1;
+  SimulateVitalResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainVitalCalculation`.
+message ExplainVitalCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  ExplainVitalCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainVitalCalculation`.
+message ExplainVitalCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  ExplainVitalCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetVitalRates`.
+message GetVitalRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetVitalRates`.
+message GetVitalRatesResponse {
+  Vital vital = 1;
+  acme.common.v1.OperationResult result = 2;
+}

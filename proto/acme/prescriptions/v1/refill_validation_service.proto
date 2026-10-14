@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.prescriptions.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/prescriptions/v1/prescriptions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Prescriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/prescriptions/v1;prescriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefillValidationServiceProto";
+option java_package = "com.acme.prescriptions.v1";
+
+// Checks refills against the rules before anything acts on them.
+service RefillValidationService {
+  // Validates a refill.
+  rpc ValidateRefill(ValidateRefillRequest) returns (ValidateRefillResponse);
+
+  // Previews a refill.
+  rpc PreviewRefill(PreviewRefillRequest) returns (PreviewRefillResponse);
+
+  // Checks a refill.
+  rpc CheckRefillEligibility(CheckRefillEligibilityRequest) returns (CheckRefillEligibilityResponse);
+
+  // Normalizes a refill.
+  rpc NormalizeRefill(NormalizeRefillRequest) returns (NormalizeRefillResponse);
+
+  // Explains a refill.
+  rpc ExplainRefillDecision(ExplainRefillDecisionRequest) returns (ExplainRefillDecisionResponse);
+
+  // Scores a refill.
+  rpc ScoreRefill(ScoreRefillRequest) returns (ScoreRefillResponse);
+
+  // Lints a refill.
+  rpc LintRefills(LintRefillsRequest) returns (LintRefillsResponse);
+
+  // Returns a refill.
+  rpc GetRefillRules(GetRefillRulesRequest) returns (GetRefillRulesResponse);
+}
+
+// The request of `ValidateRefill`.
+message ValidateRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  ValidateRefillRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateRefill`.
+message ValidateRefillResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  ValidateRefillResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewRefill`.
+message PreviewRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  PreviewRefillRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewRefill`.
+message PreviewRefillResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  PreviewRefillResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckRefillEligibility`.
+message CheckRefillEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  CheckRefillEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckRefillEligibility`.
+message CheckRefillEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  CheckRefillEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeRefill`.
+message NormalizeRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  NormalizeRefillRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeRefill`.
+message NormalizeRefillResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  NormalizeRefillResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainRefillDecision`.
+message ExplainRefillDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  ExplainRefillDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainRefillDecision`.
+message ExplainRefillDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  ExplainRefillDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreRefill`.
+message ScoreRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  ScoreRefillRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreRefill`.
+message ScoreRefillResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreRefillResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Refill refill = 1;
+  ScoreRefillResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintRefills`.
+message LintRefillsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  LintRefillsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintRefills`.
+message LintRefillsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  LintRefillsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRefillRules`.
+message GetRefillRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRefillRules`.
+message GetRefillRulesResponse {
+  Refill refill = 1;
+  acme.common.v1.OperationResult result = 2;
+}

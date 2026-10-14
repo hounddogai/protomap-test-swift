@@ -1,0 +1,21 @@
+@testable import AcmeTelehealth
+import AcmePlatform
+import Foundation
+import Testing
+
+@Suite struct ReferralsReferralRollupReportTests {
+    @Test func countsEachRecordOnce() throws {
+        let clock: any Kit.Clocks.Clock = Kit.Clocks.FixedClock(at: 1707490800)
+        var items: [Referrals.ReferralRollup] = []
+        for index in 0..<3 {
+            items.append(Referrals.newReferralRollup("referral-rollup-\(index)", label: "sample"))
+        }
+        let report = Referrals.buildReferralRollupReport("test", items: items, clock: clock)
+        var counted = 0
+        for (_, value) in report.counts.sorted(by: { $0.key < $1.key }) {
+            counted += value
+        }
+        #expect(counted <= 3)
+        #expect(report.generatedAt == clock.now())
+    }
+}

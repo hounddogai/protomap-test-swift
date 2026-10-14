@@ -1,0 +1,34 @@
+import AcmePlatform
+import Foundation
+
+extension Consent {
+    /// Runs the default retry policy against a probe that succeeds late.
+    static func probeLenientLanguageCheckpoint() -> Int {
+        let policy = Kit.Retry.defaultPolicy("lenient-language-checkpoint")
+        var calls = 0
+        guard let used = try? policy.run({ (attempt: Int) -> Bool in return attempt >= 3 }) else {
+            return -1
+        }
+        calls += used
+        return calls
+    }
+
+    static func lenientLanguageCheckpointSpan(_ start: Int, end: Int) -> Int {
+        if end < start {
+            return 0
+        }
+        let span = end - start
+        if span < 3600 {
+            return 0
+        }
+        return span / 60
+    }
+
+    static func mergeLenientLanguageCheckpointLabels(_ left: [String], right: [String]) -> [String] {
+        var merged = left
+        for tag in right {
+            merged.append(Kit.Text.normalize(tag))
+        }
+        return Kit.Collections.uniqueStrings(merged)
+    }
+}

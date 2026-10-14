@@ -1,0 +1,284 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PatientSyncServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Keeps patients in step with the systems of record in other regions.
+service PatientSyncService {
+  // Syncs a patient.
+  rpc SyncPatients(SyncPatientsRequest) returns (SyncPatientsResponse);
+
+  // Pushs a patient.
+  rpc PushPatient(PushPatientRequest) returns (PushPatientResponse);
+
+  // Pulls a patient.
+  rpc PullPatients(PullPatientsRequest) returns (PullPatientsResponse);
+
+  // Reconciles a patient.
+  rpc ReconcilePatients(ReconcilePatientsRequest) returns (ReconcilePatientsResponse);
+
+  // Exchanges changes of patients with a peer.
+  rpc StreamPatientChanges(stream StreamPatientChangesRequest) returns (stream StreamPatientChangesResponse);
+
+  // Resolves a patient.
+  rpc ResolvePatientConflict(ResolvePatientConflictRequest) returns (ResolvePatientConflictResponse);
+
+  // Returns a patient.
+  rpc GetPatientSyncState(GetPatientSyncStateRequest) returns (GetPatientSyncStateResponse);
+
+  // Lists patients a page at a time.
+  rpc ListPatientConflicts(ListPatientConflictsRequest) returns (ListPatientConflictsResponse);
+}
+
+// The request of `SyncPatients`.
+message SyncPatientsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  SyncPatientsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SyncPatients`.
+message SyncPatientsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  SyncPatientsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PushPatient`.
+message PushPatientRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  PushPatientRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PushPatient`.
+message PushPatientResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  PushPatientResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PullPatients`.
+message PullPatientsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  PullPatientsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PullPatients`.
+message PullPatientsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  PullPatientsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReconcilePatients`.
+message ReconcilePatientsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  ReconcilePatientsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ReconcilePatients`.
+message ReconcilePatientsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  ReconcilePatientsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `StreamPatientChanges`.
+message StreamPatientChangesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    Patient change = 2;
+    StreamPatientChangesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `StreamPatientChanges`.
+message StreamPatientChangesResponse {
+  Patient patient = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ResolvePatientConflict`.
+message ResolvePatientConflictRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  ResolvePatientConflictRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResolvePatientConflict`.
+message ResolvePatientConflictResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  ResolvePatientConflictResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPatientSyncState`.
+message GetPatientSyncStateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPatientSyncState`.
+message GetPatientSyncStateResponse {
+  Patient patient = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPatientConflicts`.
+message ListPatientConflictsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PatientStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPatientConflictsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPatientConflicts`.
+message ListPatientConflictsResponse {
+  repeated Patient patients = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

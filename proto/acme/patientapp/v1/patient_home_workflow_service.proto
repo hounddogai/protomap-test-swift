@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patientapp.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/patientapp/v1/patientapp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patientapp.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patientapp/v1;patientappv1";
+option java_multiple_files = true;
+option java_outer_classname = "PatientHomeWorkflowServiceProto";
+option java_package = "com.acme.patientapp.v1";
+
+// Runs the long-lived workflow that takes a patient home from start to finish.
+service PatientHomeWorkflowService {
+  // Starts a patient home.
+  rpc StartPatientHomeWorkflow(StartPatientHomeWorkflowRequest) returns (StartPatientHomeWorkflowResponse);
+
+  // Advances a patient home.
+  rpc AdvancePatientHomeWorkflow(AdvancePatientHomeWorkflowRequest) returns (AdvancePatientHomeWorkflowResponse);
+
+  // Cancels a patient home.
+  rpc CancelPatientHomeWorkflow(CancelPatientHomeWorkflowRequest) returns (CancelPatientHomeWorkflowResponse);
+
+  // Retrys a patient home.
+  rpc RetryPatientHomeWorkflow(RetryPatientHomeWorkflowRequest) returns (RetryPatientHomeWorkflowResponse);
+
+  // Pauses a patient home.
+  rpc PausePatientHomeWorkflow(PausePatientHomeWorkflowRequest) returns (PausePatientHomeWorkflowResponse);
+
+  // Resumes a patient home.
+  rpc ResumePatientHomeWorkflow(ResumePatientHomeWorkflowRequest) returns (ResumePatientHomeWorkflowResponse);
+
+  // Returns a patient home.
+  rpc InspectPatientHomeWorkflow(InspectPatientHomeWorkflowRequest) returns (InspectPatientHomeWorkflowResponse);
+
+  // Lists patient homes a page at a time.
+  rpc ListPatientHomeWorkflows(ListPatientHomeWorkflowsRequest) returns (ListPatientHomeWorkflowsResponse);
+
+  // Signals a patient home.
+  rpc SignalPatientHomeWorkflow(SignalPatientHomeWorkflowRequest) returns (SignalPatientHomeWorkflowResponse);
+}
+
+// The request of `StartPatientHomeWorkflow`.
+message StartPatientHomeWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  PatientHome patient_home = 3;
+  StartPatientHomeWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPatientHomeWorkflow`.
+message StartPatientHomeWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PatientHome patient_home = 1;
+  StartPatientHomeWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePatientHomeWorkflow`.
+message AdvancePatientHomeWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  PatientHome patient_home = 3;
+  AdvancePatientHomeWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePatientHomeWorkflow`.
+message AdvancePatientHomeWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PatientHome patient_home = 1;
+  AdvancePatientHomeWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelPatientHomeWorkflow`.
+message CancelPatientHomeWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  PatientHome patient_home = 3;
+  CancelPatientHomeWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelPatientHomeWorkflow`.
+message CancelPatientHomeWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PatientHome patient_home = 1;
+  CancelPatientHomeWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPatientHomeWorkflow`.
+message RetryPatientHomeWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  PatientHome patient_home = 3;
+  RetryPatientHomeWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPatientHomeWorkflow`.
+message RetryPatientHomeWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PatientHome patient_home = 1;
+  RetryPatientHomeWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PausePatientHomeWorkflow`.
+message PausePatientHomeWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  PatientHome patient_home = 3;
+  PausePatientHomeWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PausePatientHomeWorkflow`.
+message PausePatientHomeWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PatientHome patient_home = 1;
+  PausePatientHomeWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumePatientHomeWorkflow`.
+message ResumePatientHomeWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  PatientHome patient_home = 3;
+  ResumePatientHomeWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumePatientHomeWorkflow`.
+message ResumePatientHomeWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PatientHome patient_home = 1;
+  ResumePatientHomeWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectPatientHomeWorkflow`.
+message InspectPatientHomeWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectPatientHomeWorkflow`.
+message InspectPatientHomeWorkflowResponse {
+  PatientHome patient_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPatientHomeWorkflows`.
+message ListPatientHomeWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PatientHomeStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPatientHomeWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPatientHomeWorkflows`.
+message ListPatientHomeWorkflowsResponse {
+  repeated PatientHome patient_homes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalPatientHomeWorkflow`.
+message SignalPatientHomeWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  PatientHome patient_home = 3;
+  SignalPatientHomeWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalPatientHomeWorkflow`.
+message SignalPatientHomeWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PatientHome patient_home = 1;
+  SignalPatientHomeWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

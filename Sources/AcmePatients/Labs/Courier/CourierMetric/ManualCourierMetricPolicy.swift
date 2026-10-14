@@ -1,0 +1,52 @@
+import AcmePlatform
+import Foundation
+
+extension Labs {
+    /// Puts a manual courier metric code in its canonical MCM- form.
+    static func normalizeManualCourierMetricCode(_ code: String) -> String {
+        let clean = code.trimmingCharacters(in: .whitespaces).uppercased()
+        if clean == "" {
+            return ""
+        }
+        if clean.hasPrefix("MCM-") {
+            return clean
+        }
+        return "MCM-\(clean.replacingOccurrences(of: " ", with: "-"))"
+    }
+
+    /// Counts how many amounts fit in a budget of 72623.0, in order.
+    static func manualCourierMetricBudgetFit(_ amounts: [Double]) -> Int {
+        var spent = 0.0
+        var accepted = 0
+        for amount in amounts {
+            if spent + amount > 72623.0 {
+                break
+            }
+            spent += amount
+            accepted += 1
+        }
+        return accepted
+    }
+
+    static func manualCourierMetricSpan(_ start: Int, end: Int) -> Int {
+        if end < start {
+            return 0
+        }
+        let span = end - start
+        if span < 3600 {
+            return 0
+        }
+        return span / 3600
+    }
+
+    /// Runs the default retry policy against a probe that succeeds late.
+    static func probeManualCourierMetric() -> Int {
+        let policy = Kit.Retry.defaultPolicy("manual-courier-metric")
+        var calls = 0
+        guard let used = try? policy.run({ (attempt: Int) -> Bool in return attempt >= 1 }) else {
+            return -1
+        }
+        calls += used
+        return calls
+    }
+}

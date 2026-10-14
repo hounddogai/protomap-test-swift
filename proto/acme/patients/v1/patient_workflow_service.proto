@@ -1,0 +1,229 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PatientWorkflowServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Runs the long-lived workflow that takes a patient from start to finish.
+service PatientWorkflowService {
+  // Starts a patient.
+  rpc StartPatientWorkflow(StartPatientWorkflowRequest) returns (StartPatientWorkflowResponse);
+
+  // Advances a patient.
+  rpc AdvancePatientWorkflow(AdvancePatientWorkflowRequest) returns (AdvancePatientWorkflowResponse);
+
+  // Cancels a patient.
+  rpc CancelPatientWorkflow(CancelPatientWorkflowRequest) returns (CancelPatientWorkflowResponse);
+
+  // Retrys a patient.
+  rpc RetryPatientWorkflow(RetryPatientWorkflowRequest) returns (RetryPatientWorkflowResponse);
+
+  // Returns a patient.
+  rpc InspectPatientWorkflow(InspectPatientWorkflowRequest) returns (InspectPatientWorkflowResponse);
+
+  // Signals a patient.
+  rpc SignalPatientWorkflow(SignalPatientWorkflowRequest) returns (SignalPatientWorkflowResponse);
+}
+
+// The request of `StartPatientWorkflow`.
+message StartPatientWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  StartPatientWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPatientWorkflow`.
+message StartPatientWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  StartPatientWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePatientWorkflow`.
+message AdvancePatientWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  AdvancePatientWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePatientWorkflow`.
+message AdvancePatientWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  AdvancePatientWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelPatientWorkflow`.
+message CancelPatientWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  CancelPatientWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelPatientWorkflow`.
+message CancelPatientWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  CancelPatientWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPatientWorkflow`.
+message RetryPatientWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  RetryPatientWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPatientWorkflow`.
+message RetryPatientWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  RetryPatientWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectPatientWorkflow`.
+message InspectPatientWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectPatientWorkflow`.
+message InspectPatientWorkflowResponse {
+  Patient patient = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `SignalPatientWorkflow`.
+message SignalPatientWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  SignalPatientWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalPatientWorkflow`.
+message SignalPatientWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  SignalPatientWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

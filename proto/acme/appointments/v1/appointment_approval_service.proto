@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.appointments.v1;
+
+import "acme/appointments/v1/appointments.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Appointments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/appointments/v1;appointmentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "AppointmentApprovalServiceProto";
+option java_package = "com.acme.appointments.v1";
+
+// Routes appointments through approval, with escalation and delegation.
+service AppointmentApprovalService {
+  // Submits an appointment.
+  rpc SubmitAppointment(SubmitAppointmentRequest) returns (SubmitAppointmentResponse);
+
+  // Approves an appointment.
+  rpc ApproveAppointment(ApproveAppointmentRequest) returns (ApproveAppointmentResponse);
+
+  // Rejects an appointment.
+  rpc RejectAppointment(RejectAppointmentRequest) returns (RejectAppointmentResponse);
+
+  // Escalates an appointment.
+  rpc EscalateAppointment(EscalateAppointmentRequest) returns (EscalateAppointmentResponse);
+
+  // Lists appointments a page at a time.
+  rpc ListPendingAppointments(ListPendingAppointmentsRequest) returns (ListPendingAppointmentsResponse);
+
+  // Delegates an appointment.
+  rpc DelegateAppointmentApproval(DelegateAppointmentApprovalRequest) returns (DelegateAppointmentApprovalResponse);
+
+  // Returns an appointment.
+  rpc GetAppointmentApprovalStatus(GetAppointmentApprovalStatusRequest) returns (GetAppointmentApprovalStatusResponse);
+
+  // Comments an appointment.
+  rpc CommentAppointmentApproval(CommentAppointmentApprovalRequest) returns (CommentAppointmentApprovalResponse);
+}
+
+// The request of `SubmitAppointment`.
+message SubmitAppointmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  Appointment appointment = 3;
+  SubmitAppointmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitAppointment`.
+message SubmitAppointmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Appointment appointment = 1;
+  SubmitAppointmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveAppointment`.
+message ApproveAppointmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  Appointment appointment = 3;
+  ApproveAppointmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveAppointment`.
+message ApproveAppointmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Appointment appointment = 1;
+  ApproveAppointmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectAppointment`.
+message RejectAppointmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  Appointment appointment = 3;
+  RejectAppointmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectAppointment`.
+message RejectAppointmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Appointment appointment = 1;
+  RejectAppointmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateAppointment`.
+message EscalateAppointmentRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  Appointment appointment = 3;
+  EscalateAppointmentRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateAppointment`.
+message EscalateAppointmentResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Appointment appointment = 1;
+  EscalateAppointmentResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingAppointments`.
+message ListPendingAppointmentsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AppointmentStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingAppointmentsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingAppointments`.
+message ListPendingAppointmentsResponse {
+  repeated Appointment appointments = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateAppointmentApproval`.
+message DelegateAppointmentApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  Appointment appointment = 3;
+  DelegateAppointmentApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateAppointmentApproval`.
+message DelegateAppointmentApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Appointment appointment = 1;
+  DelegateAppointmentApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetAppointmentApprovalStatus`.
+message GetAppointmentApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAppointmentApprovalStatus`.
+message GetAppointmentApprovalStatusResponse {
+  Appointment appointment = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentAppointmentApproval`.
+message CommentAppointmentApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  Appointment appointment = 3;
+  CommentAppointmentApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentAppointmentApproval`.
+message CommentAppointmentApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Appointment appointment = 1;
+  CommentAppointmentApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,292 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MedicalRecordCalculationServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Computes the figures of a medical record, such as totals, taxes, and estimates.
+service MedicalRecordCalculationService {
+  // Calculates a medical record.
+  rpc CalculateMedicalRecord(CalculateMedicalRecordRequest) returns (CalculateMedicalRecordResponse);
+
+  // Estimates a medical record.
+  rpc EstimateMedicalRecord(EstimateMedicalRecordRequest) returns (EstimateMedicalRecordResponse);
+
+  // Quotes a medical record.
+  rpc QuoteMedicalRecord(QuoteMedicalRecordRequest) returns (QuoteMedicalRecordResponse);
+
+  // Compares a medical record.
+  rpc CompareMedicalRecordOptions(CompareMedicalRecordOptionsRequest) returns (CompareMedicalRecordOptionsResponse);
+
+  // Simulates a medical record.
+  rpc SimulateMedicalRecord(SimulateMedicalRecordRequest) returns (SimulateMedicalRecordResponse);
+
+  // Explains a medical record.
+  rpc ExplainMedicalRecordCalculation(ExplainMedicalRecordCalculationRequest) returns (ExplainMedicalRecordCalculationResponse);
+
+  // Returns a medical record.
+  rpc GetMedicalRecordRates(GetMedicalRecordRatesRequest) returns (GetMedicalRecordRatesResponse);
+}
+
+// The request of `CalculateMedicalRecord`.
+message CalculateMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  CalculateMedicalRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateMedicalRecord`.
+message CalculateMedicalRecordResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateMedicalRecordResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  MedicalRecord medical_record = 1;
+  CalculateMedicalRecordResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateMedicalRecord`.
+message EstimateMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  EstimateMedicalRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateMedicalRecord`.
+message EstimateMedicalRecordResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateMedicalRecordResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  MedicalRecord medical_record = 1;
+  EstimateMedicalRecordResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteMedicalRecord`.
+message QuoteMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  QuoteMedicalRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteMedicalRecord`.
+message QuoteMedicalRecordResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteMedicalRecordResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  MedicalRecord medical_record = 1;
+  QuoteMedicalRecordResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareMedicalRecordOptions`.
+message CompareMedicalRecordOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  CompareMedicalRecordOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareMedicalRecordOptions`.
+message CompareMedicalRecordOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareMedicalRecordOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  MedicalRecord medical_record = 1;
+  CompareMedicalRecordOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateMedicalRecord`.
+message SimulateMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  SimulateMedicalRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateMedicalRecord`.
+message SimulateMedicalRecordResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateMedicalRecordResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  MedicalRecord medical_record = 1;
+  SimulateMedicalRecordResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainMedicalRecordCalculation`.
+message ExplainMedicalRecordCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  ExplainMedicalRecordCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainMedicalRecordCalculation`.
+message ExplainMedicalRecordCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  ExplainMedicalRecordCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetMedicalRecordRates`.
+message GetMedicalRecordRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetMedicalRecordRates`.
+message GetMedicalRecordRatesResponse {
+  MedicalRecord medical_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}

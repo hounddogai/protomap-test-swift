@@ -1,0 +1,229 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.prescriptions.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/prescriptions/v1/prescriptions.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Prescriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/prescriptions/v1;prescriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MedicationSyncServiceProto";
+option java_package = "com.acme.prescriptions.v1";
+
+// Keeps medications in step with the systems of record in other regions.
+service MedicationSyncService {
+  // Syncs a medication.
+  rpc SyncMedications(SyncMedicationsRequest) returns (SyncMedicationsResponse);
+
+  // Pushs a medication.
+  rpc PushMedication(PushMedicationRequest) returns (PushMedicationResponse);
+
+  // Pulls a medication.
+  rpc PullMedications(PullMedicationsRequest) returns (PullMedicationsResponse);
+
+  // Exchanges changes of medications with a peer.
+  rpc StreamMedicationChanges(stream StreamMedicationChangesRequest) returns (stream StreamMedicationChangesResponse);
+
+  // Resolves a medication.
+  rpc ResolveMedicationConflict(ResolveMedicationConflictRequest) returns (ResolveMedicationConflictResponse);
+
+  // Lists medications a page at a time.
+  rpc ListMedicationConflicts(ListMedicationConflictsRequest) returns (ListMedicationConflictsResponse);
+}
+
+// The request of `SyncMedications`.
+message SyncMedicationsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  SyncMedicationsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SyncMedications`.
+message SyncMedicationsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  SyncMedicationsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PushMedication`.
+message PushMedicationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  PushMedicationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PushMedication`.
+message PushMedicationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  PushMedicationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PullMedications`.
+message PullMedicationsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  PullMedicationsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PullMedications`.
+message PullMedicationsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  PullMedicationsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `StreamMedicationChanges`.
+message StreamMedicationChangesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    Medication change = 2;
+    StreamMedicationChangesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `StreamMedicationChanges`.
+message StreamMedicationChangesResponse {
+  Medication medication = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ResolveMedicationConflict`.
+message ResolveMedicationConflictRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  ResolveMedicationConflictRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResolveMedicationConflict`.
+message ResolveMedicationConflictResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  ResolveMedicationConflictResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListMedicationConflicts`.
+message ListMedicationConflictsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MedicationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListMedicationConflictsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListMedicationConflicts`.
+message ListMedicationConflictsResponse {
+  repeated Medication medications = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.telehealth.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/telehealth/v1/telehealth.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Telehealth.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/telehealth/v1;telehealthv1";
+option java_multiple_files = true;
+option java_outer_classname = "VisitNoteLifecycleServiceProto";
+option java_package = "com.acme.telehealth.v1";
+
+// Moves a visit note between the states of its lifecycle.
+service VisitNoteLifecycleService {
+  // Activates a visit note.
+  rpc ActivateVisitNote(ActivateVisitNoteRequest) returns (ActivateVisitNoteResponse);
+
+  // Suspends a visit note.
+  rpc SuspendVisitNote(SuspendVisitNoteRequest) returns (SuspendVisitNoteResponse);
+
+  // Reinstates a visit note.
+  rpc ReinstateVisitNote(ReinstateVisitNoteRequest) returns (ReinstateVisitNoteResponse);
+
+  // Terminates a visit note.
+  rpc TerminateVisitNote(TerminateVisitNoteRequest) returns (TerminateVisitNoteResponse);
+
+  // Renews a visit note.
+  rpc RenewVisitNote(RenewVisitNoteRequest) returns (RenewVisitNoteResponse);
+
+  // Expires a visit note.
+  rpc ExpireVisitNote(ExpireVisitNoteRequest) returns (ExpireVisitNoteResponse);
+
+  // Returns a visit note.
+  rpc GetVisitNoteLifecycle(GetVisitNoteLifecycleRequest) returns (GetVisitNoteLifecycleResponse);
+
+  // Schedules a visit note.
+  rpc ScheduleVisitNoteExpiry(ScheduleVisitNoteExpiryRequest) returns (ScheduleVisitNoteExpiryResponse);
+}
+
+// The request of `ActivateVisitNote`.
+message ActivateVisitNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  ActivateVisitNoteRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateVisitNote`.
+message ActivateVisitNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VisitNote visit_note = 1;
+  ActivateVisitNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendVisitNote`.
+message SuspendVisitNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  SuspendVisitNoteRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendVisitNote`.
+message SuspendVisitNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VisitNote visit_note = 1;
+  SuspendVisitNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateVisitNote`.
+message ReinstateVisitNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  ReinstateVisitNoteRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateVisitNote`.
+message ReinstateVisitNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VisitNote visit_note = 1;
+  ReinstateVisitNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateVisitNote`.
+message TerminateVisitNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  TerminateVisitNoteRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateVisitNote`.
+message TerminateVisitNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VisitNote visit_note = 1;
+  TerminateVisitNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewVisitNote`.
+message RenewVisitNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  RenewVisitNoteRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewVisitNote`.
+message RenewVisitNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VisitNote visit_note = 1;
+  RenewVisitNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireVisitNote`.
+message ExpireVisitNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  ExpireVisitNoteRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireVisitNote`.
+message ExpireVisitNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VisitNote visit_note = 1;
+  ExpireVisitNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetVisitNoteLifecycle`.
+message GetVisitNoteLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetVisitNoteLifecycle`.
+message GetVisitNoteLifecycleResponse {
+  VisitNote visit_note = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleVisitNoteExpiry`.
+message ScheduleVisitNoteExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  VisitNote visit_note = 3;
+  ScheduleVisitNoteExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleVisitNoteExpiry`.
+message ScheduleVisitNoteExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VisitNote visit_note = 1;
+  ScheduleVisitNoteExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

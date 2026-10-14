@@ -1,0 +1,165 @@
+import AcmePlatform
+import Foundation
+
+extension BedManagement {
+    /// One step of the transfer schedule calculation.
+    protocol TransferScheduleStep {
+        func describe() -> String
+        func adjust(_ item: TransferSchedule, value: Double) -> Double
+    }
+
+    final class NameTransferScheduleAdjuster: TransferScheduleStep {
+        var factors: [String: Double]
+
+        init(factors: [String: Double]) {
+            self.factors = factors
+        }
+
+        func describe() -> String {
+            return "by name"
+        }
+
+        func adjust(_ item: TransferSchedule, value: Double) -> Double {
+            guard let factor = factors[item.groupKey()] else {
+                return value
+            }
+            return value * factor
+        }
+    }
+
+    final class FlaggedTransferScheduleAdjuster: TransferScheduleStep {
+        var flags: Kit.Flags.Registry
+        var flag: String
+        var percent: Double
+
+        init(flags: Kit.Flags.Registry, flag: String, percent: Double) {
+            self.flags = flags
+            self.flag = flag
+            self.percent = percent
+        }
+
+        func describe() -> String {
+            return "\(percent) when \(flag) is on"
+        }
+
+        func adjust(_ item: TransferSchedule, value: Double) -> Double {
+            if !flags.enabled(flag, subject: item.code) {
+                return value
+            }
+            return value * (1.0 + percent / 100.0)
+        }
+    }
+
+    final class MinimumTransferScheduleAdjuster: TransferScheduleStep {
+        var minimum: Double
+
+        init(minimum: Double) {
+            self.minimum = minimum
+        }
+
+        func describe() -> String {
+            return "at least \(minimum)"
+        }
+
+        func adjust(_ item: TransferSchedule, value: Double) -> Double {
+            if value < minimum {
+                return minimum
+            }
+            return value
+        }
+    }
+
+    final class RoundingTransferScheduleAdjuster: TransferScheduleStep {
+        var step: Double
+
+        init(step: Double) {
+            self.step = step
+        }
+
+        func describe() -> String {
+            return "round to \(step)"
+        }
+
+        func adjust(_ item: TransferSchedule, value: Double) -> Double {
+            return Kit.Numbers.roundTo(value, step: step)
+        }
+    }
+
+    final class CapTransferScheduleAdjuster: TransferScheduleStep {
+        var cap: Double
+
+        init(cap: Double) {
+            self.cap = cap
+        }
+
+        func describe() -> String {
+            return "cap at \(cap)"
+        }
+
+        func adjust(_ item: TransferSchedule, value: Double) -> Double {
+            return Swift.min(value, cap)
+        }
+    }
+
+    /// Runs the transfer schedule steps in order and keeps a trace of each.
+    final class TransferScheduleEngine {
+        var steps: [any TransferScheduleStep]
+        var trace: [String]
+        var floor: Double
+        var ceiling: Double
+
+        init(steps: [any TransferScheduleStep], trace: [String], floor: Double, ceiling: Double) {
+            self.steps = steps
+            self.trace = trace
+            self.floor = floor
+            self.ceiling = ceiling
+        }
+
+        func compute(_ item: TransferSchedule) -> Double {
+            var current = item.effectiveValue()
+            trace = []
+            for index in 0..<steps.count {
+                let step: any TransferScheduleStep = steps[index]
+                let before = current
+                current = step.adjust(item, value: current)
+                if before != current {
+                    trace.append("\(index + 1). \(step.describe()) changed \(before) to \(current)")
+                }
+            }
+            if current < floor {
+                return floor
+            }
+            if current > ceiling {
+                return ceiling
+            }
+            return current
+        }
+
+        func explain() -> String {
+            return trace.joined(separator: "\n")
+        }
+
+        func evaluateAll(_ items: [TransferSchedule]) -> [String: Double] {
+            var results: [String: Double] = [:]
+            for item in items {
+                results[item.code] = self.compute(item)
+            }
+            return results
+        }
+    }
+
+    static func defaultTransferScheduleEngine(_ flags: Kit.Flags.Registry) -> TransferScheduleEngine {
+        return TransferScheduleEngine(
+            steps: [
+                NameTransferScheduleAdjuster(factors: ["west": 1.11]),
+                FlaggedTransferScheduleAdjuster(flags: flags, flag: "transfer-schedule-rolling", percent: -2.0),
+                MinimumTransferScheduleAdjuster(minimum: 37.6),
+                RoundingTransferScheduleAdjuster(step: 0.25),
+                CapTransferScheduleAdjuster(cap: 25570.0),
+            ],
+            trace: [],
+            floor: 5.0,
+            ceiling: 84238.7
+        )
+    }
+}

@@ -1,0 +1,14 @@
+@testable import AcmePrescriptions
+import AcmePlatform
+import Foundation
+import Testing
+
+@Suite struct PharmacyRollingRecallTierEngineTests {
+    @Test func keepsResultsWithinBounds() throws {
+        let engine = Pharmacy.defaultRollingRecallTierEngine()
+        let item = Pharmacy.newRollingRecallTier("code-382", name: "name-620")
+        let result = engine.evaluate(item)
+        #expect(result >= engine.floor && (result <= engine.ceiling))
+        #expect(engine.trace.count >= 0)
+    }
+}

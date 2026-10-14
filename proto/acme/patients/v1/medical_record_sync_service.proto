@@ -1,0 +1,246 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MedicalRecordSyncServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Keeps medical records in step with the systems of record in other regions.
+service MedicalRecordSyncService {
+  // Syncs a medical record.
+  rpc SyncMedicalRecords(SyncMedicalRecordsRequest) returns (SyncMedicalRecordsResponse);
+
+  // Pushs a medical record.
+  rpc PushMedicalRecord(PushMedicalRecordRequest) returns (PushMedicalRecordResponse);
+
+  // Reconciles a medical record.
+  rpc ReconcileMedicalRecords(ReconcileMedicalRecordsRequest) returns (ReconcileMedicalRecordsResponse);
+
+  // Exchanges changes of medical records with a peer.
+  rpc StreamMedicalRecordChanges(stream StreamMedicalRecordChangesRequest) returns (stream StreamMedicalRecordChangesResponse);
+
+  // Resolves a medical record.
+  rpc ResolveMedicalRecordConflict(ResolveMedicalRecordConflictRequest) returns (ResolveMedicalRecordConflictResponse);
+
+  // Returns a medical record.
+  rpc GetMedicalRecordSyncState(GetMedicalRecordSyncStateRequest) returns (GetMedicalRecordSyncStateResponse);
+
+  // Lists medical records a page at a time.
+  rpc ListMedicalRecordConflicts(ListMedicalRecordConflictsRequest) returns (ListMedicalRecordConflictsResponse);
+}
+
+// The request of `SyncMedicalRecords`.
+message SyncMedicalRecordsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  SyncMedicalRecordsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SyncMedicalRecords`.
+message SyncMedicalRecordsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  SyncMedicalRecordsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PushMedicalRecord`.
+message PushMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  PushMedicalRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PushMedicalRecord`.
+message PushMedicalRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  PushMedicalRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReconcileMedicalRecords`.
+message ReconcileMedicalRecordsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  ReconcileMedicalRecordsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ReconcileMedicalRecords`.
+message ReconcileMedicalRecordsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  ReconcileMedicalRecordsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `StreamMedicalRecordChanges`.
+message StreamMedicalRecordChangesRequest {
+  // An acknowledgment of a change the peer sent.
+  message ChangeAck {
+    int64 sequence = 1;
+    string status = 2;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof frame {
+    MedicalRecord change = 2;
+    StreamMedicalRecordChangesRequest.ChangeAck ack = 3;
+  }
+  string cursor = 4;
+}
+
+// The response of `StreamMedicalRecordChanges`.
+message StreamMedicalRecordChangesResponse {
+  MedicalRecord medical_record = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ResolveMedicalRecordConflict`.
+message ResolveMedicalRecordConflictRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  ResolveMedicalRecordConflictRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResolveMedicalRecordConflict`.
+message ResolveMedicalRecordConflictResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  ResolveMedicalRecordConflictResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetMedicalRecordSyncState`.
+message GetMedicalRecordSyncStateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetMedicalRecordSyncState`.
+message GetMedicalRecordSyncStateResponse {
+  MedicalRecord medical_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListMedicalRecordConflicts`.
+message ListMedicalRecordConflictsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MedicalRecordStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListMedicalRecordConflictsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListMedicalRecordConflicts`.
+message ListMedicalRecordConflictsResponse {
+  repeated MedicalRecord medical_records = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

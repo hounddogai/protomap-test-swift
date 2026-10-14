@@ -1,0 +1,268 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MedicalRecordValidationServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Checks medical records against the rules before anything acts on them.
+service MedicalRecordValidationService {
+  // Validates a medical record.
+  rpc ValidateMedicalRecord(ValidateMedicalRecordRequest) returns (ValidateMedicalRecordResponse);
+
+  // Previews a medical record.
+  rpc PreviewMedicalRecord(PreviewMedicalRecordRequest) returns (PreviewMedicalRecordResponse);
+
+  // Checks a medical record.
+  rpc CheckMedicalRecordEligibility(CheckMedicalRecordEligibilityRequest) returns (CheckMedicalRecordEligibilityResponse);
+
+  // Explains a medical record.
+  rpc ExplainMedicalRecordDecision(ExplainMedicalRecordDecisionRequest) returns (ExplainMedicalRecordDecisionResponse);
+
+  // Scores a medical record.
+  rpc ScoreMedicalRecord(ScoreMedicalRecordRequest) returns (ScoreMedicalRecordResponse);
+
+  // Lints a medical record.
+  rpc LintMedicalRecords(LintMedicalRecordsRequest) returns (LintMedicalRecordsResponse);
+
+  // Returns a medical record.
+  rpc GetMedicalRecordRules(GetMedicalRecordRulesRequest) returns (GetMedicalRecordRulesResponse);
+}
+
+// The request of `ValidateMedicalRecord`.
+message ValidateMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  ValidateMedicalRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateMedicalRecord`.
+message ValidateMedicalRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  ValidateMedicalRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewMedicalRecord`.
+message PreviewMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  PreviewMedicalRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewMedicalRecord`.
+message PreviewMedicalRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  PreviewMedicalRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckMedicalRecordEligibility`.
+message CheckMedicalRecordEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  CheckMedicalRecordEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckMedicalRecordEligibility`.
+message CheckMedicalRecordEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  CheckMedicalRecordEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainMedicalRecordDecision`.
+message ExplainMedicalRecordDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  ExplainMedicalRecordDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainMedicalRecordDecision`.
+message ExplainMedicalRecordDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  ExplainMedicalRecordDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreMedicalRecord`.
+message ScoreMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  ScoreMedicalRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreMedicalRecord`.
+message ScoreMedicalRecordResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreMedicalRecordResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  MedicalRecord medical_record = 1;
+  ScoreMedicalRecordResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintMedicalRecords`.
+message LintMedicalRecordsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  LintMedicalRecordsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintMedicalRecords`.
+message LintMedicalRecordsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  LintMedicalRecordsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetMedicalRecordRules`.
+message GetMedicalRecordRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetMedicalRecordRules`.
+message GetMedicalRecordRulesResponse {
+  MedicalRecord medical_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}

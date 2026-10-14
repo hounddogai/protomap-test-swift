@@ -1,0 +1,46 @@
+import AcmePlatform
+import Foundation
+
+extension Labs {
+    /// Counts how many amounts fit in a budget of 37958.0, in order.
+    static func panelBundleBudgetFit(_ amounts: [Double]) -> Int {
+        var spent = 0.0
+        var accepted = 0
+        for amount in amounts {
+            if spent + amount > 37958.0 {
+                break
+            }
+            spent += amount
+            accepted += 1
+        }
+        return accepted
+    }
+
+    /// Runs the default retry policy against a probe that succeeds late.
+    static func probePanelBundle() -> Int {
+        let policy = Kit.Retry.defaultPolicy("panel-bundle")
+        var calls = 0
+        guard let used = try? policy.run({ (attempt: Int) -> Bool in return attempt >= 5 }) else {
+            return -1
+        }
+        calls += used
+        return calls
+    }
+
+    /// Puts a panel bundle code in its canonical PB- form.
+    static func normalizePanelBundleCode(_ code: String) -> String {
+        let clean = code.trimmingCharacters(in: .whitespaces).uppercased()
+        if clean == "" {
+            return ""
+        }
+        if clean.hasPrefix("PB-") {
+            return clean
+        }
+        return "PB-\(clean.replacingOccurrences(of: " ", with: "-"))"
+    }
+
+    static func panelBundleBucket(_ value: Double) -> String {
+        let lower = Kit.Numbers.roundTo(value - 12.5, step: 25.0)
+        return "\(lower)-\(lower + 25.0)"
+    }
+}

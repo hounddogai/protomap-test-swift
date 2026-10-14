@@ -1,0 +1,257 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.careplans.v1;
+
+import "acme/careplans/v1/careplans.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Careplans.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/careplans/v1;careplansv1";
+option java_multiple_files = true;
+option java_outer_classname = "CarePlanApprovalServiceProto";
+option java_package = "com.acme.careplans.v1";
+
+// Routes care plans through approval, with escalation and delegation.
+service CarePlanApprovalService {
+  // Submits a care plan.
+  rpc SubmitCarePlan(SubmitCarePlanRequest) returns (SubmitCarePlanResponse);
+
+  // Approves a care plan.
+  rpc ApproveCarePlan(ApproveCarePlanRequest) returns (ApproveCarePlanResponse);
+
+  // Rejects a care plan.
+  rpc RejectCarePlan(RejectCarePlanRequest) returns (RejectCarePlanResponse);
+
+  // Lists care plans a page at a time.
+  rpc ListPendingCarePlans(ListPendingCarePlansRequest) returns (ListPendingCarePlansResponse);
+
+  // Delegates a care plan.
+  rpc DelegateCarePlanApproval(DelegateCarePlanApprovalRequest) returns (DelegateCarePlanApprovalResponse);
+
+  // Returns a care plan.
+  rpc GetCarePlanApprovalStatus(GetCarePlanApprovalStatusRequest) returns (GetCarePlanApprovalStatusResponse);
+
+  // Comments a care plan.
+  rpc CommentCarePlanApproval(CommentCarePlanApprovalRequest) returns (CommentCarePlanApprovalResponse);
+}
+
+// The request of `SubmitCarePlan`.
+message SubmitCarePlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  SubmitCarePlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitCarePlan`.
+message SubmitCarePlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  SubmitCarePlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveCarePlan`.
+message ApproveCarePlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  ApproveCarePlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveCarePlan`.
+message ApproveCarePlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  ApproveCarePlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectCarePlan`.
+message RejectCarePlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  RejectCarePlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectCarePlan`.
+message RejectCarePlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  RejectCarePlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingCarePlans`.
+message ListPendingCarePlansRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CarePlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingCarePlansRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingCarePlans`.
+message ListPendingCarePlansResponse {
+  repeated CarePlan care_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateCarePlanApproval`.
+message DelegateCarePlanApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  DelegateCarePlanApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateCarePlanApproval`.
+message DelegateCarePlanApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  DelegateCarePlanApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCarePlanApprovalStatus`.
+message GetCarePlanApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCarePlanApprovalStatus`.
+message GetCarePlanApprovalStatusResponse {
+  CarePlan care_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentCarePlanApproval`.
+message CommentCarePlanApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  CommentCarePlanApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentCarePlanApproval`.
+message CommentCarePlanApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  CommentCarePlanApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

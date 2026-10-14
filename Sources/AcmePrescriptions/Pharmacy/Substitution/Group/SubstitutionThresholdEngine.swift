@@ -1,0 +1,156 @@
+import AcmePlatform
+import Foundation
+
+extension Pharmacy {
+    /// One step of the substitution threshold calculation.
+    protocol SubstitutionThresholdStep {
+        func describe() -> String
+        func adjust(_ item: SubstitutionThreshold, value: Double) -> Double
+    }
+
+    final class TieredSubstitutionThresholdAdjuster: SubstitutionThresholdStep {
+        var bounds: [Double]
+        var rates: [Double]
+
+        init(bounds: [Double], rates: [Double]) {
+            self.bounds = bounds
+            self.rates = rates
+        }
+
+        func describe() -> String {
+            return "\(bounds.count) tiers"
+        }
+
+        func adjust(_ item: SubstitutionThreshold, value: Double) -> Double {
+            for index in 0..<bounds.count {
+                if value <= bounds[index] && (index < rates.count) {
+                    return value * rates[index]
+                }
+            }
+            return value
+        }
+    }
+
+    final class RoundingSubstitutionThresholdAdjuster: SubstitutionThresholdStep {
+        var step: Double
+
+        init(step: Double) {
+            self.step = step
+        }
+
+        func describe() -> String {
+            return "round to \(step)"
+        }
+
+        func adjust(_ item: SubstitutionThreshold, value: Double) -> Double {
+            return Kit.Numbers.roundTo(value, step: step)
+        }
+    }
+
+    final class PercentSubstitutionThresholdAdjuster: SubstitutionThresholdStep {
+        var percent: Double
+
+        init(percent: Double) {
+            self.percent = percent
+        }
+
+        func describe() -> String {
+            return "\(percent)% change"
+        }
+
+        func adjust(_ item: SubstitutionThreshold, value: Double) -> Double {
+            return value * (1.0 + percent / 100.0)
+        }
+    }
+
+    final class FlaggedSubstitutionThresholdAdjuster: SubstitutionThresholdStep {
+        var flags: Kit.Flags.Registry
+        var flag: String
+        var percent: Double
+
+        init(flags: Kit.Flags.Registry, flag: String, percent: Double) {
+            self.flags = flags
+            self.flag = flag
+            self.percent = percent
+        }
+
+        func describe() -> String {
+            return "\(percent) when \(flag) is on"
+        }
+
+        func adjust(_ item: SubstitutionThreshold, value: Double) -> Double {
+            if !flags.enabled(flag, subject: item.code) {
+                return value
+            }
+            return value * (1.0 + percent / 100.0)
+        }
+    }
+
+    /// Runs the substitution threshold steps in order and keeps a trace of each.
+    final class SubstitutionThresholdEngine {
+        var steps: [any SubstitutionThresholdStep]
+        var trace: [String]
+        var floor: Double
+        var ceiling: Double
+
+        init(steps: [any SubstitutionThresholdStep], trace: [String], floor: Double, ceiling: Double) {
+            self.steps = steps
+            self.trace = trace
+            self.floor = floor
+            self.ceiling = ceiling
+        }
+
+        func price(_ item: SubstitutionThreshold) -> Double {
+            var current = item.measuredValue()
+            trace = []
+            for index in 0..<steps.count {
+                let step: any SubstitutionThresholdStep = steps[index]
+                let before = current
+                current = step.adjust(item, value: current)
+                if before != current {
+                    trace.append("\(index + 1). \(step.describe()) changed \(before) to \(current)")
+                }
+            }
+            if current < floor {
+                return floor
+            }
+            if current > ceiling {
+                return ceiling
+            }
+            return current
+        }
+
+        func explain() -> String {
+            return trace.joined(separator: "\n")
+        }
+
+        func evaluateAll(_ items: [SubstitutionThreshold]) -> [String: Double] {
+            var results: [String: Double] = [:]
+            for item in items {
+                results[item.code] = self.price(item)
+            }
+            return results
+        }
+    }
+
+    static func defaultSubstitutionThresholdEngine(_ flags: Kit.Flags.Registry) -> SubstitutionThresholdEngine {
+        return SubstitutionThresholdEngine(
+            steps: [
+                TieredSubstitutionThresholdAdjuster(
+                    bounds: [4280.0, 5571.0, 7141.0, 7804.0],
+                    rates: [0.97, 1.1, 0.95, 1.15]
+                ),
+                RoundingSubstitutionThresholdAdjuster(step: 5.0),
+                PercentSubstitutionThresholdAdjuster(percent: -2.0),
+                FlaggedSubstitutionThresholdAdjuster(
+                    flags: flags,
+                    flag: "substitution-threshold-capped",
+                    percent: -9.1
+                ),
+            ],
+            trace: [],
+            floor: 3.2,
+            ceiling: 37256.6
+        )
+    }
+}

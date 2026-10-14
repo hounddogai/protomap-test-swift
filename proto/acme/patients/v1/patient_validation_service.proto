@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PatientValidationServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Checks patients against the rules before anything acts on them.
+service PatientValidationService {
+  // Validates a patient.
+  rpc ValidatePatient(ValidatePatientRequest) returns (ValidatePatientResponse);
+
+  // Previews a patient.
+  rpc PreviewPatient(PreviewPatientRequest) returns (PreviewPatientResponse);
+
+  // Checks a patient.
+  rpc CheckPatientEligibility(CheckPatientEligibilityRequest) returns (CheckPatientEligibilityResponse);
+
+  // Normalizes a patient.
+  rpc NormalizePatient(NormalizePatientRequest) returns (NormalizePatientResponse);
+
+  // Explains a patient.
+  rpc ExplainPatientDecision(ExplainPatientDecisionRequest) returns (ExplainPatientDecisionResponse);
+
+  // Scores a patient.
+  rpc ScorePatient(ScorePatientRequest) returns (ScorePatientResponse);
+
+  // Lints a patient.
+  rpc LintPatients(LintPatientsRequest) returns (LintPatientsResponse);
+
+  // Returns a patient.
+  rpc GetPatientRules(GetPatientRulesRequest) returns (GetPatientRulesResponse);
+}
+
+// The request of `ValidatePatient`.
+message ValidatePatientRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  ValidatePatientRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidatePatient`.
+message ValidatePatientResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  ValidatePatientResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewPatient`.
+message PreviewPatientRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  PreviewPatientRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewPatient`.
+message PreviewPatientResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  PreviewPatientResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckPatientEligibility`.
+message CheckPatientEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  CheckPatientEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckPatientEligibility`.
+message CheckPatientEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  CheckPatientEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizePatient`.
+message NormalizePatientRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  NormalizePatientRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizePatient`.
+message NormalizePatientResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  NormalizePatientResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainPatientDecision`.
+message ExplainPatientDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  ExplainPatientDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainPatientDecision`.
+message ExplainPatientDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  ExplainPatientDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScorePatient`.
+message ScorePatientRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  ScorePatientRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScorePatient`.
+message ScorePatientResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScorePatientResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Patient patient = 1;
+  ScorePatientResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintPatients`.
+message LintPatientsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  Patient patient = 3;
+  LintPatientsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintPatients`.
+message LintPatientsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Patient patient = 1;
+  LintPatientsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPatientRules`.
+message GetPatientRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string patient_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPatientRules`.
+message GetPatientRulesResponse {
+  Patient patient = 1;
+  acme.common.v1.OperationResult result = 2;
+}

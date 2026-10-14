@@ -1,0 +1,255 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MedicalRecordLifecycleServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Moves a medical record between the states of its lifecycle.
+service MedicalRecordLifecycleService {
+  // Activates a medical record.
+  rpc ActivateMedicalRecord(ActivateMedicalRecordRequest) returns (ActivateMedicalRecordResponse);
+
+  // Suspends a medical record.
+  rpc SuspendMedicalRecord(SuspendMedicalRecordRequest) returns (SuspendMedicalRecordResponse);
+
+  // Reinstates a medical record.
+  rpc ReinstateMedicalRecord(ReinstateMedicalRecordRequest) returns (ReinstateMedicalRecordResponse);
+
+  // Terminates a medical record.
+  rpc TerminateMedicalRecord(TerminateMedicalRecordRequest) returns (TerminateMedicalRecordResponse);
+
+  // Renews a medical record.
+  rpc RenewMedicalRecord(RenewMedicalRecordRequest) returns (RenewMedicalRecordResponse);
+
+  // Expires a medical record.
+  rpc ExpireMedicalRecord(ExpireMedicalRecordRequest) returns (ExpireMedicalRecordResponse);
+
+  // Returns a medical record.
+  rpc GetMedicalRecordLifecycle(GetMedicalRecordLifecycleRequest) returns (GetMedicalRecordLifecycleResponse);
+}
+
+// The request of `ActivateMedicalRecord`.
+message ActivateMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  ActivateMedicalRecordRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateMedicalRecord`.
+message ActivateMedicalRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  ActivateMedicalRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendMedicalRecord`.
+message SuspendMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  SuspendMedicalRecordRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendMedicalRecord`.
+message SuspendMedicalRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  SuspendMedicalRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateMedicalRecord`.
+message ReinstateMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  ReinstateMedicalRecordRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateMedicalRecord`.
+message ReinstateMedicalRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  ReinstateMedicalRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateMedicalRecord`.
+message TerminateMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  TerminateMedicalRecordRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateMedicalRecord`.
+message TerminateMedicalRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  TerminateMedicalRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewMedicalRecord`.
+message RenewMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  RenewMedicalRecordRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewMedicalRecord`.
+message RenewMedicalRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  RenewMedicalRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireMedicalRecord`.
+message ExpireMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  ExpireMedicalRecordRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireMedicalRecord`.
+message ExpireMedicalRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  ExpireMedicalRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetMedicalRecordLifecycle`.
+message GetMedicalRecordLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetMedicalRecordLifecycle`.
+message GetMedicalRecordLifecycleResponse {
+  MedicalRecord medical_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}

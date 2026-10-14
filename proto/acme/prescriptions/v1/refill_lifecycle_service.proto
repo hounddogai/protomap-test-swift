@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.prescriptions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/prescriptions/v1/prescriptions.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Prescriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/prescriptions/v1;prescriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefillLifecycleServiceProto";
+option java_package = "com.acme.prescriptions.v1";
+
+// Moves a refill between the states of its lifecycle.
+service RefillLifecycleService {
+  // Activates a refill.
+  rpc ActivateRefill(ActivateRefillRequest) returns (ActivateRefillResponse);
+
+  // Suspends a refill.
+  rpc SuspendRefill(SuspendRefillRequest) returns (SuspendRefillResponse);
+
+  // Reinstates a refill.
+  rpc ReinstateRefill(ReinstateRefillRequest) returns (ReinstateRefillResponse);
+
+  // Terminates a refill.
+  rpc TerminateRefill(TerminateRefillRequest) returns (TerminateRefillResponse);
+
+  // Renews a refill.
+  rpc RenewRefill(RenewRefillRequest) returns (RenewRefillResponse);
+
+  // Expires a refill.
+  rpc ExpireRefill(ExpireRefillRequest) returns (ExpireRefillResponse);
+
+  // Returns a refill.
+  rpc GetRefillLifecycle(GetRefillLifecycleRequest) returns (GetRefillLifecycleResponse);
+
+  // Schedules a refill.
+  rpc ScheduleRefillExpiry(ScheduleRefillExpiryRequest) returns (ScheduleRefillExpiryResponse);
+}
+
+// The request of `ActivateRefill`.
+message ActivateRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  ActivateRefillRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateRefill`.
+message ActivateRefillResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  ActivateRefillResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendRefill`.
+message SuspendRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  SuspendRefillRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendRefill`.
+message SuspendRefillResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  SuspendRefillResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateRefill`.
+message ReinstateRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  ReinstateRefillRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateRefill`.
+message ReinstateRefillResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  ReinstateRefillResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateRefill`.
+message TerminateRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  TerminateRefillRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateRefill`.
+message TerminateRefillResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  TerminateRefillResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewRefill`.
+message RenewRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  RenewRefillRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewRefill`.
+message RenewRefillResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  RenewRefillResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireRefill`.
+message ExpireRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  ExpireRefillRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireRefill`.
+message ExpireRefillResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  ExpireRefillResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRefillLifecycle`.
+message GetRefillLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRefillLifecycle`.
+message GetRefillLifecycleResponse {
+  Refill refill = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleRefillExpiry`.
+message ScheduleRefillExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  ScheduleRefillExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleRefillExpiry`.
+message ScheduleRefillExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  ScheduleRefillExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

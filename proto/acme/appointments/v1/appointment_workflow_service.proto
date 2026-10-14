@@ -1,0 +1,267 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.appointments.v1;
+
+import "acme/appointments/v1/appointments.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Appointments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/appointments/v1;appointmentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "AppointmentWorkflowServiceProto";
+option java_package = "com.acme.appointments.v1";
+
+// Runs the long-lived workflow that takes an appointment from start to finish.
+service AppointmentWorkflowService {
+  // Starts an appointment.
+  rpc StartAppointmentWorkflow(StartAppointmentWorkflowRequest) returns (StartAppointmentWorkflowResponse);
+
+  // Advances an appointment.
+  rpc AdvanceAppointmentWorkflow(AdvanceAppointmentWorkflowRequest) returns (AdvanceAppointmentWorkflowResponse);
+
+  // Cancels an appointment.
+  rpc CancelAppointmentWorkflow(CancelAppointmentWorkflowRequest) returns (CancelAppointmentWorkflowResponse);
+
+  // Retrys an appointment.
+  rpc RetryAppointmentWorkflow(RetryAppointmentWorkflowRequest) returns (RetryAppointmentWorkflowResponse);
+
+  // Pauses an appointment.
+  rpc PauseAppointmentWorkflow(PauseAppointmentWorkflowRequest) returns (PauseAppointmentWorkflowResponse);
+
+  // Resumes an appointment.
+  rpc ResumeAppointmentWorkflow(ResumeAppointmentWorkflowRequest) returns (ResumeAppointmentWorkflowResponse);
+
+  // Returns an appointment.
+  rpc InspectAppointmentWorkflow(InspectAppointmentWorkflowRequest) returns (InspectAppointmentWorkflowResponse);
+}
+
+// The request of `StartAppointmentWorkflow`.
+message StartAppointmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  Appointment appointment = 3;
+  StartAppointmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartAppointmentWorkflow`.
+message StartAppointmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Appointment appointment = 1;
+  StartAppointmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceAppointmentWorkflow`.
+message AdvanceAppointmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  Appointment appointment = 3;
+  AdvanceAppointmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceAppointmentWorkflow`.
+message AdvanceAppointmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Appointment appointment = 1;
+  AdvanceAppointmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelAppointmentWorkflow`.
+message CancelAppointmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  Appointment appointment = 3;
+  CancelAppointmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelAppointmentWorkflow`.
+message CancelAppointmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Appointment appointment = 1;
+  CancelAppointmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryAppointmentWorkflow`.
+message RetryAppointmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  Appointment appointment = 3;
+  RetryAppointmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryAppointmentWorkflow`.
+message RetryAppointmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Appointment appointment = 1;
+  RetryAppointmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseAppointmentWorkflow`.
+message PauseAppointmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  Appointment appointment = 3;
+  PauseAppointmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseAppointmentWorkflow`.
+message PauseAppointmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Appointment appointment = 1;
+  PauseAppointmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeAppointmentWorkflow`.
+message ResumeAppointmentWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  Appointment appointment = 3;
+  ResumeAppointmentWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeAppointmentWorkflow`.
+message ResumeAppointmentWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Appointment appointment = 1;
+  ResumeAppointmentWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectAppointmentWorkflow`.
+message InspectAppointmentWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string appointment_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectAppointmentWorkflow`.
+message InspectAppointmentWorkflowResponse {
+  Appointment appointment = 1;
+  acme.common.v1.OperationResult result = 2;
+}

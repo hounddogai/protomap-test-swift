@@ -1,0 +1,170 @@
+import AcmePlatform
+import Foundation
+
+extension Imaging {
+    /// A rule a fallback worklist agreement must pass. Check returns its problems, or none.
+    protocol FallbackWorklistAgreementRule {
+        func check(_ item: FallbackWorklistAgreement) -> [String]
+    }
+
+    final class FallbackWorklistAgreementScoreRangeRule: FallbackWorklistAgreementRule {
+        var min: Double
+        var max: Double
+
+        init(min: Double, max: Double) {
+            self.min = min
+            self.max = max
+        }
+
+        func check(_ item: FallbackWorklistAgreement) -> [String] {
+            let value = item.score
+            if value < min || value > max {
+                return ["score \(value) is outside \(min) to \(max)"]
+            }
+            return []
+        }
+    }
+
+    final class FallbackWorklistAgreementAllowedTimezoneRule: FallbackWorklistAgreementRule {
+        var allowed: [String]
+
+        init(allowed: [String]) {
+            self.allowed = allowed
+        }
+
+        func check(_ item: FallbackWorklistAgreement) -> [String] {
+            if allowed.count == 0 {
+                return []
+            }
+            if !allowed.contains(Kit.Text.normalize(item.timezone)) {
+                return ["timezone \(item.timezone) is unknown"]
+            }
+            return []
+        }
+    }
+
+    final class FallbackWorklistAgreementRequiredTimezoneRule: FallbackWorklistAgreementRule {
+        var message: String
+
+        init(message: String) {
+            self.message = message
+        }
+
+        func check(_ item: FallbackWorklistAgreement) -> [String] {
+            if item.timezone.trimmingCharacters(in: .whitespaces) == "" {
+                return [message]
+            }
+            return []
+        }
+    }
+
+    final class FallbackWorklistAgreementTimezoneLengthRule: FallbackWorklistAgreementRule {
+        var maxLength: Int
+
+        init(maxLength: Int) {
+            self.maxLength = maxLength
+        }
+
+        func check(_ item: FallbackWorklistAgreement) -> [String] {
+            let size = item.timezone.count
+            if size > maxLength {
+                return ["timezone is \(size) characters, more than \(maxLength)"]
+            }
+            return []
+        }
+    }
+
+    final class FallbackWorklistAgreementEndsAtRangeRule: FallbackWorklistAgreementRule {
+        var min: Int
+        var max: Int
+
+        init(min: Int, max: Int) {
+            self.min = min
+            self.max = max
+        }
+
+        func check(_ item: FallbackWorklistAgreement) -> [String] {
+            let value = item.endsAt
+            var problems: [String] = []
+            if value < min {
+                problems.append("ends at \(value) is below \(min)")
+            }
+            if value > max {
+                problems.append("ends at \(value) is above \(max)")
+            }
+            return problems
+        }
+    }
+
+    final class FallbackWorklistAgreementMinimumRangeRule: FallbackWorklistAgreementRule {
+        var min: Double
+        var max: Double
+
+        init(min: Double, max: Double) {
+            self.min = min
+            self.max = max
+        }
+
+        func check(_ item: FallbackWorklistAgreement) -> [String] {
+            let value = item.minimum
+            if value < min || value > max {
+                return ["minimum \(value) is outside \(min) to \(max)"]
+            }
+            return []
+        }
+    }
+
+    /// Runs every rule of a fallback worklist agreement.
+    final class FallbackWorklistAgreementValidator {
+        var rules: [any FallbackWorklistAgreementRule]
+
+        init(rules: [any FallbackWorklistAgreementRule]) {
+            self.rules = rules
+        }
+
+        func validate(_ item: FallbackWorklistAgreement) -> [String] {
+            var problems: [String] = []
+            for rule in rules {
+                let found = rule.check(item)
+                if found.count == 0 {
+                    continue
+                }
+                for problem in found {
+                    problems.append("\(item.code): \(problem)")
+                }
+            }
+            return problems
+        }
+
+        func requireValid(_ item: FallbackWorklistAgreement) throws {
+            let problems = self.validate(item)
+            if problems.count > 0 {
+                throw Kit.Failure("\(item.label()) is invalid: \(problems.joined(separator: "; "))")
+            }
+        }
+
+        func validateAll(_ items: [FallbackWorklistAgreement]) -> [String: [String]] {
+            var report: [String: [String]] = [:]
+            for item in items {
+                let problems = self.validate(item)
+                if problems.count > 0 {
+                    report[item.code] = problems
+                }
+            }
+            return report
+        }
+    }
+
+    static func defaultFallbackWorklistAgreementValidator() -> FallbackWorklistAgreementValidator {
+        return FallbackWorklistAgreementValidator(
+            rules: [
+                FallbackWorklistAgreementScoreRangeRule(min: 9.1, max: 1693.1),
+                FallbackWorklistAgreementAllowedTimezoneRule(allowed: ["batched", "weighted"]),
+                FallbackWorklistAgreementRequiredTimezoneRule(message: "fallback worklist agreement needs this field"),
+                FallbackWorklistAgreementTimezoneLengthRule(maxLength: 1000),
+                FallbackWorklistAgreementEndsAtRangeRule(min: 64, max: 86400),
+                FallbackWorklistAgreementMinimumRangeRule(min: 9.3, max: 2015.1),
+            ]
+        )
+    }
+}
