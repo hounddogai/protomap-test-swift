@@ -1,0 +1,295 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.prescriptions.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/prescriptions/v1/prescriptions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Prescriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/prescriptions/v1;prescriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "RefillApprovalServiceProto";
+option java_package = "com.acme.prescriptions.v1";
+
+// Routes refills through approval, with escalation and delegation.
+service RefillApprovalService {
+  // Submits a refill.
+  rpc SubmitRefill(SubmitRefillRequest) returns (SubmitRefillResponse);
+
+  // Approves a refill.
+  rpc ApproveRefill(ApproveRefillRequest) returns (ApproveRefillResponse);
+
+  // Escalates a refill.
+  rpc EscalateRefill(EscalateRefillRequest) returns (EscalateRefillResponse);
+
+  // Lists refills a page at a time.
+  rpc ListPendingRefills(ListPendingRefillsRequest) returns (ListPendingRefillsResponse);
+
+  // Delegates a refill.
+  rpc DelegateRefillApproval(DelegateRefillApprovalRequest) returns (DelegateRefillApprovalResponse);
+
+  // Recalls a refill.
+  rpc RecallRefill(RecallRefillRequest) returns (RecallRefillResponse);
+
+  // Returns a refill.
+  rpc GetRefillApprovalStatus(GetRefillApprovalStatusRequest) returns (GetRefillApprovalStatusResponse);
+
+  // Comments a refill.
+  rpc CommentRefillApproval(CommentRefillApprovalRequest) returns (CommentRefillApprovalResponse);
+}
+
+// The request of `SubmitRefill`.
+message SubmitRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  SubmitRefillRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitRefill`.
+message SubmitRefillResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  SubmitRefillResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveRefill`.
+message ApproveRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  ApproveRefillRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveRefill`.
+message ApproveRefillResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  ApproveRefillResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateRefill`.
+message EscalateRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  EscalateRefillRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateRefill`.
+message EscalateRefillResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  EscalateRefillResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingRefills`.
+message ListPendingRefillsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated RefillStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingRefillsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingRefills`.
+message ListPendingRefillsResponse {
+  repeated Refill refills = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateRefillApproval`.
+message DelegateRefillApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  DelegateRefillApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateRefillApproval`.
+message DelegateRefillApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  DelegateRefillApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallRefill`.
+message RecallRefillRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  RecallRefillRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallRefill`.
+message RecallRefillResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  RecallRefillResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetRefillApprovalStatus`.
+message GetRefillApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetRefillApprovalStatus`.
+message GetRefillApprovalStatusResponse {
+  Refill refill = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentRefillApproval`.
+message CommentRefillApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string refill_id = 2;
+  Refill refill = 3;
+  CommentRefillApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentRefillApproval`.
+message CommentRefillApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Refill refill = 1;
+  CommentRefillApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

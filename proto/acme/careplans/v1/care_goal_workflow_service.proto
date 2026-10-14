@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.careplans.v1;
+
+import "acme/careplans/v1/careplans.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Careplans.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/careplans/v1;careplansv1";
+option java_multiple_files = true;
+option java_outer_classname = "CareGoalWorkflowServiceProto";
+option java_package = "com.acme.careplans.v1";
+
+// Runs the long-lived workflow that takes a care goal from start to finish.
+service CareGoalWorkflowService {
+  // Starts a care goal.
+  rpc StartCareGoalWorkflow(StartCareGoalWorkflowRequest) returns (StartCareGoalWorkflowResponse);
+
+  // Advances a care goal.
+  rpc AdvanceCareGoalWorkflow(AdvanceCareGoalWorkflowRequest) returns (AdvanceCareGoalWorkflowResponse);
+
+  // Cancels a care goal.
+  rpc CancelCareGoalWorkflow(CancelCareGoalWorkflowRequest) returns (CancelCareGoalWorkflowResponse);
+
+  // Retrys a care goal.
+  rpc RetryCareGoalWorkflow(RetryCareGoalWorkflowRequest) returns (RetryCareGoalWorkflowResponse);
+
+  // Pauses a care goal.
+  rpc PauseCareGoalWorkflow(PauseCareGoalWorkflowRequest) returns (PauseCareGoalWorkflowResponse);
+
+  // Resumes a care goal.
+  rpc ResumeCareGoalWorkflow(ResumeCareGoalWorkflowRequest) returns (ResumeCareGoalWorkflowResponse);
+
+  // Returns a care goal.
+  rpc InspectCareGoalWorkflow(InspectCareGoalWorkflowRequest) returns (InspectCareGoalWorkflowResponse);
+
+  // Lists care goals a page at a time.
+  rpc ListCareGoalWorkflows(ListCareGoalWorkflowsRequest) returns (ListCareGoalWorkflowsResponse);
+
+  // Signals a care goal.
+  rpc SignalCareGoalWorkflow(SignalCareGoalWorkflowRequest) returns (SignalCareGoalWorkflowResponse);
+}
+
+// The request of `StartCareGoalWorkflow`.
+message StartCareGoalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  StartCareGoalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartCareGoalWorkflow`.
+message StartCareGoalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  StartCareGoalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceCareGoalWorkflow`.
+message AdvanceCareGoalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  AdvanceCareGoalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceCareGoalWorkflow`.
+message AdvanceCareGoalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  AdvanceCareGoalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelCareGoalWorkflow`.
+message CancelCareGoalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  CancelCareGoalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelCareGoalWorkflow`.
+message CancelCareGoalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  CancelCareGoalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryCareGoalWorkflow`.
+message RetryCareGoalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  RetryCareGoalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryCareGoalWorkflow`.
+message RetryCareGoalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  RetryCareGoalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseCareGoalWorkflow`.
+message PauseCareGoalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  PauseCareGoalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseCareGoalWorkflow`.
+message PauseCareGoalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  PauseCareGoalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeCareGoalWorkflow`.
+message ResumeCareGoalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  ResumeCareGoalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeCareGoalWorkflow`.
+message ResumeCareGoalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  ResumeCareGoalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectCareGoalWorkflow`.
+message InspectCareGoalWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectCareGoalWorkflow`.
+message InspectCareGoalWorkflowResponse {
+  CareGoal care_goal = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListCareGoalWorkflows`.
+message ListCareGoalWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareGoalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListCareGoalWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListCareGoalWorkflows`.
+message ListCareGoalWorkflowsResponse {
+  repeated CareGoal care_goals = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalCareGoalWorkflow`.
+message SignalCareGoalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  SignalCareGoalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalCareGoalWorkflow`.
+message SignalCareGoalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  SignalCareGoalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.prescriptions.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/prescriptions/v1/prescriptions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Prescriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/prescriptions/v1;prescriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MedicationApprovalServiceProto";
+option java_package = "com.acme.prescriptions.v1";
+
+// Routes medications through approval, with escalation and delegation.
+service MedicationApprovalService {
+  // Submits a medication.
+  rpc SubmitMedication(SubmitMedicationRequest) returns (SubmitMedicationResponse);
+
+  // Approves a medication.
+  rpc ApproveMedication(ApproveMedicationRequest) returns (ApproveMedicationResponse);
+
+  // Rejects a medication.
+  rpc RejectMedication(RejectMedicationRequest) returns (RejectMedicationResponse);
+
+  // Escalates a medication.
+  rpc EscalateMedication(EscalateMedicationRequest) returns (EscalateMedicationResponse);
+
+  // Lists medications a page at a time.
+  rpc ListPendingMedications(ListPendingMedicationsRequest) returns (ListPendingMedicationsResponse);
+
+  // Delegates a medication.
+  rpc DelegateMedicationApproval(DelegateMedicationApprovalRequest) returns (DelegateMedicationApprovalResponse);
+
+  // Recalls a medication.
+  rpc RecallMedication(RecallMedicationRequest) returns (RecallMedicationResponse);
+
+  // Returns a medication.
+  rpc GetMedicationApprovalStatus(GetMedicationApprovalStatusRequest) returns (GetMedicationApprovalStatusResponse);
+
+  // Comments a medication.
+  rpc CommentMedicationApproval(CommentMedicationApprovalRequest) returns (CommentMedicationApprovalResponse);
+}
+
+// The request of `SubmitMedication`.
+message SubmitMedicationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  SubmitMedicationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitMedication`.
+message SubmitMedicationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  SubmitMedicationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveMedication`.
+message ApproveMedicationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  ApproveMedicationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveMedication`.
+message ApproveMedicationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  ApproveMedicationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectMedication`.
+message RejectMedicationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  RejectMedicationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectMedication`.
+message RejectMedicationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  RejectMedicationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateMedication`.
+message EscalateMedicationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  EscalateMedicationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateMedication`.
+message EscalateMedicationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  EscalateMedicationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingMedications`.
+message ListPendingMedicationsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MedicationStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingMedicationsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingMedications`.
+message ListPendingMedicationsResponse {
+  repeated Medication medications = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateMedicationApproval`.
+message DelegateMedicationApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  DelegateMedicationApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateMedicationApproval`.
+message DelegateMedicationApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  DelegateMedicationApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallMedication`.
+message RecallMedicationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  RecallMedicationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallMedication`.
+message RecallMedicationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  RecallMedicationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetMedicationApprovalStatus`.
+message GetMedicationApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetMedicationApprovalStatus`.
+message GetMedicationApprovalStatusResponse {
+  Medication medication = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentMedicationApproval`.
+message CommentMedicationApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  CommentMedicationApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentMedicationApproval`.
+message CommentMedicationApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  CommentMedicationApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

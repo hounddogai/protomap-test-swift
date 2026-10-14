@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.prescriptions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/prescriptions/v1/prescriptions.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Prescriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/prescriptions/v1;prescriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PrescriptionWorkflowServiceProto";
+option java_package = "com.acme.prescriptions.v1";
+
+// Runs the long-lived workflow that takes a prescription from start to finish.
+service PrescriptionWorkflowService {
+  // Starts a prescription.
+  rpc StartPrescriptionWorkflow(StartPrescriptionWorkflowRequest) returns (StartPrescriptionWorkflowResponse);
+
+  // Advances a prescription.
+  rpc AdvancePrescriptionWorkflow(AdvancePrescriptionWorkflowRequest) returns (AdvancePrescriptionWorkflowResponse);
+
+  // Retrys a prescription.
+  rpc RetryPrescriptionWorkflow(RetryPrescriptionWorkflowRequest) returns (RetryPrescriptionWorkflowResponse);
+
+  // Pauses a prescription.
+  rpc PausePrescriptionWorkflow(PausePrescriptionWorkflowRequest) returns (PausePrescriptionWorkflowResponse);
+
+  // Resumes a prescription.
+  rpc ResumePrescriptionWorkflow(ResumePrescriptionWorkflowRequest) returns (ResumePrescriptionWorkflowResponse);
+
+  // Returns a prescription.
+  rpc InspectPrescriptionWorkflow(InspectPrescriptionWorkflowRequest) returns (InspectPrescriptionWorkflowResponse);
+
+  // Lists prescriptions a page at a time.
+  rpc ListPrescriptionWorkflows(ListPrescriptionWorkflowsRequest) returns (ListPrescriptionWorkflowsResponse);
+
+  // Signals a prescription.
+  rpc SignalPrescriptionWorkflow(SignalPrescriptionWorkflowRequest) returns (SignalPrescriptionWorkflowResponse);
+}
+
+// The request of `StartPrescriptionWorkflow`.
+message StartPrescriptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  Prescription prescription = 3;
+  StartPrescriptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPrescriptionWorkflow`.
+message StartPrescriptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Prescription prescription = 1;
+  StartPrescriptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvancePrescriptionWorkflow`.
+message AdvancePrescriptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  Prescription prescription = 3;
+  AdvancePrescriptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvancePrescriptionWorkflow`.
+message AdvancePrescriptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Prescription prescription = 1;
+  AdvancePrescriptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryPrescriptionWorkflow`.
+message RetryPrescriptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  Prescription prescription = 3;
+  RetryPrescriptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryPrescriptionWorkflow`.
+message RetryPrescriptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Prescription prescription = 1;
+  RetryPrescriptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PausePrescriptionWorkflow`.
+message PausePrescriptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  Prescription prescription = 3;
+  PausePrescriptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PausePrescriptionWorkflow`.
+message PausePrescriptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Prescription prescription = 1;
+  PausePrescriptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumePrescriptionWorkflow`.
+message ResumePrescriptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  Prescription prescription = 3;
+  ResumePrescriptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumePrescriptionWorkflow`.
+message ResumePrescriptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Prescription prescription = 1;
+  ResumePrescriptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectPrescriptionWorkflow`.
+message InspectPrescriptionWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectPrescriptionWorkflow`.
+message InspectPrescriptionWorkflowResponse {
+  Prescription prescription = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListPrescriptionWorkflows`.
+message ListPrescriptionWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PrescriptionStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPrescriptionWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPrescriptionWorkflows`.
+message ListPrescriptionWorkflowsResponse {
+  repeated Prescription prescriptions = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalPrescriptionWorkflow`.
+message SignalPrescriptionWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  Prescription prescription = 3;
+  SignalPrescriptionWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalPrescriptionWorkflow`.
+message SignalPrescriptionWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Prescription prescription = 1;
+  SignalPrescriptionWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

@@ -1,0 +1,317 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patientapp.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/patientapp/v1/patientapp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patientapp.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patientapp/v1;patientappv1";
+option java_multiple_files = true;
+option java_outer_classname = "CareInboxWorkflowServiceProto";
+option java_package = "com.acme.patientapp.v1";
+
+// Runs the long-lived workflow that takes a care inbox from start to finish.
+service CareInboxWorkflowService {
+  // Starts a care inbox.
+  rpc StartCareInboxWorkflow(StartCareInboxWorkflowRequest) returns (StartCareInboxWorkflowResponse);
+
+  // Advances a care inbox.
+  rpc AdvanceCareInboxWorkflow(AdvanceCareInboxWorkflowRequest) returns (AdvanceCareInboxWorkflowResponse);
+
+  // Cancels a care inbox.
+  rpc CancelCareInboxWorkflow(CancelCareInboxWorkflowRequest) returns (CancelCareInboxWorkflowResponse);
+
+  // Retrys a care inbox.
+  rpc RetryCareInboxWorkflow(RetryCareInboxWorkflowRequest) returns (RetryCareInboxWorkflowResponse);
+
+  // Pauses a care inbox.
+  rpc PauseCareInboxWorkflow(PauseCareInboxWorkflowRequest) returns (PauseCareInboxWorkflowResponse);
+
+  // Resumes a care inbox.
+  rpc ResumeCareInboxWorkflow(ResumeCareInboxWorkflowRequest) returns (ResumeCareInboxWorkflowResponse);
+
+  // Lists care inboxes a page at a time.
+  rpc ListCareInboxWorkflows(ListCareInboxWorkflowsRequest) returns (ListCareInboxWorkflowsResponse);
+
+  // Signals a care inbox.
+  rpc SignalCareInboxWorkflow(SignalCareInboxWorkflowRequest) returns (SignalCareInboxWorkflowResponse);
+}
+
+// The request of `StartCareInboxWorkflow`.
+message StartCareInboxWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_inbox_id = 2;
+  CareInbox care_inbox = 3;
+  StartCareInboxWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartCareInboxWorkflow`.
+message StartCareInboxWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareInbox care_inbox = 1;
+  StartCareInboxWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceCareInboxWorkflow`.
+message AdvanceCareInboxWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_inbox_id = 2;
+  CareInbox care_inbox = 3;
+  AdvanceCareInboxWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceCareInboxWorkflow`.
+message AdvanceCareInboxWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareInbox care_inbox = 1;
+  AdvanceCareInboxWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelCareInboxWorkflow`.
+message CancelCareInboxWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_inbox_id = 2;
+  CareInbox care_inbox = 3;
+  CancelCareInboxWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelCareInboxWorkflow`.
+message CancelCareInboxWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareInbox care_inbox = 1;
+  CancelCareInboxWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryCareInboxWorkflow`.
+message RetryCareInboxWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_inbox_id = 2;
+  CareInbox care_inbox = 3;
+  RetryCareInboxWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryCareInboxWorkflow`.
+message RetryCareInboxWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareInbox care_inbox = 1;
+  RetryCareInboxWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseCareInboxWorkflow`.
+message PauseCareInboxWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_inbox_id = 2;
+  CareInbox care_inbox = 3;
+  PauseCareInboxWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseCareInboxWorkflow`.
+message PauseCareInboxWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareInbox care_inbox = 1;
+  PauseCareInboxWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeCareInboxWorkflow`.
+message ResumeCareInboxWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_inbox_id = 2;
+  CareInbox care_inbox = 3;
+  ResumeCareInboxWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeCareInboxWorkflow`.
+message ResumeCareInboxWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareInbox care_inbox = 1;
+  ResumeCareInboxWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListCareInboxWorkflows`.
+message ListCareInboxWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareInboxStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListCareInboxWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListCareInboxWorkflows`.
+message ListCareInboxWorkflowsResponse {
+  repeated CareInbox care_inboxes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalCareInboxWorkflow`.
+message SignalCareInboxWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_inbox_id = 2;
+  CareInbox care_inbox = 3;
+  SignalCareInboxWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalCareInboxWorkflow`.
+message SignalCareInboxWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareInbox care_inbox = 1;
+  SignalCareInboxWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

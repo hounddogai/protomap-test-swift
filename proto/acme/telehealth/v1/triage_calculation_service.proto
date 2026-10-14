@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.telehealth.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/telehealth/v1/telehealth.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Telehealth.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/telehealth/v1;telehealthv1";
+option java_multiple_files = true;
+option java_outer_classname = "TriageCalculationServiceProto";
+option java_package = "com.acme.telehealth.v1";
+
+// Computes the figures of a triage, such as totals, taxes, and estimates.
+service TriageCalculationService {
+  // Calculates a triage.
+  rpc CalculateTriage(CalculateTriageRequest) returns (CalculateTriageResponse);
+
+  // Estimates a triage.
+  rpc EstimateTriage(EstimateTriageRequest) returns (EstimateTriageResponse);
+
+  // Quotes a triage.
+  rpc QuoteTriage(QuoteTriageRequest) returns (QuoteTriageResponse);
+
+  // Compares a triage.
+  rpc CompareTriageOptions(CompareTriageOptionsRequest) returns (CompareTriageOptionsResponse);
+
+  // Recalculates a triage.
+  rpc RecalculateTriages(RecalculateTriagesRequest) returns (RecalculateTriagesResponse);
+
+  // Simulates a triage.
+  rpc SimulateTriage(SimulateTriageRequest) returns (SimulateTriageResponse);
+
+  // Explains a triage.
+  rpc ExplainTriageCalculation(ExplainTriageCalculationRequest) returns (ExplainTriageCalculationResponse);
+
+  // Returns a triage.
+  rpc GetTriageRates(GetTriageRatesRequest) returns (GetTriageRatesResponse);
+}
+
+// The request of `CalculateTriage`.
+message CalculateTriageRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  Triage triage = 3;
+  CalculateTriageRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateTriage`.
+message CalculateTriageResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateTriageResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Triage triage = 1;
+  CalculateTriageResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateTriage`.
+message EstimateTriageRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  Triage triage = 3;
+  EstimateTriageRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateTriage`.
+message EstimateTriageResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateTriageResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Triage triage = 1;
+  EstimateTriageResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteTriage`.
+message QuoteTriageRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  Triage triage = 3;
+  QuoteTriageRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteTriage`.
+message QuoteTriageResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteTriageResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Triage triage = 1;
+  QuoteTriageResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareTriageOptions`.
+message CompareTriageOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  Triage triage = 3;
+  CompareTriageOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareTriageOptions`.
+message CompareTriageOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareTriageOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Triage triage = 1;
+  CompareTriageOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateTriages`.
+message RecalculateTriagesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  Triage triage = 3;
+  RecalculateTriagesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateTriages`.
+message RecalculateTriagesResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateTriagesResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Triage triage = 1;
+  RecalculateTriagesResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateTriage`.
+message SimulateTriageRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  Triage triage = 3;
+  SimulateTriageRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateTriage`.
+message SimulateTriageResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateTriageResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  Triage triage = 1;
+  SimulateTriageResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainTriageCalculation`.
+message ExplainTriageCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  Triage triage = 3;
+  ExplainTriageCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainTriageCalculation`.
+message ExplainTriageCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Triage triage = 1;
+  ExplainTriageCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetTriageRates`.
+message GetTriageRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetTriageRates`.
+message GetTriageRatesResponse {
+  Triage triage = 1;
+  acme.common.v1.OperationResult result = 2;
+}

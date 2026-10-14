@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.careplans.v1;
+
+import "acme/careplans/v1/careplans.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Careplans.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/careplans/v1;careplansv1";
+option java_multiple_files = true;
+option java_outer_classname = "VitalWorkflowServiceProto";
+option java_package = "com.acme.careplans.v1";
+
+// Runs the long-lived workflow that takes a vital from start to finish.
+service VitalWorkflowService {
+  // Starts a vital.
+  rpc StartVitalWorkflow(StartVitalWorkflowRequest) returns (StartVitalWorkflowResponse);
+
+  // Advances a vital.
+  rpc AdvanceVitalWorkflow(AdvanceVitalWorkflowRequest) returns (AdvanceVitalWorkflowResponse);
+
+  // Cancels a vital.
+  rpc CancelVitalWorkflow(CancelVitalWorkflowRequest) returns (CancelVitalWorkflowResponse);
+
+  // Retrys a vital.
+  rpc RetryVitalWorkflow(RetryVitalWorkflowRequest) returns (RetryVitalWorkflowResponse);
+
+  // Pauses a vital.
+  rpc PauseVitalWorkflow(PauseVitalWorkflowRequest) returns (PauseVitalWorkflowResponse);
+
+  // Resumes a vital.
+  rpc ResumeVitalWorkflow(ResumeVitalWorkflowRequest) returns (ResumeVitalWorkflowResponse);
+
+  // Returns a vital.
+  rpc InspectVitalWorkflow(InspectVitalWorkflowRequest) returns (InspectVitalWorkflowResponse);
+
+  // Lists vitals a page at a time.
+  rpc ListVitalWorkflows(ListVitalWorkflowsRequest) returns (ListVitalWorkflowsResponse);
+}
+
+// The request of `StartVitalWorkflow`.
+message StartVitalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  StartVitalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartVitalWorkflow`.
+message StartVitalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  StartVitalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceVitalWorkflow`.
+message AdvanceVitalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  AdvanceVitalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceVitalWorkflow`.
+message AdvanceVitalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  AdvanceVitalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelVitalWorkflow`.
+message CancelVitalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  CancelVitalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelVitalWorkflow`.
+message CancelVitalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  CancelVitalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryVitalWorkflow`.
+message RetryVitalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  RetryVitalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryVitalWorkflow`.
+message RetryVitalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  RetryVitalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseVitalWorkflow`.
+message PauseVitalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  PauseVitalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseVitalWorkflow`.
+message PauseVitalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  PauseVitalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeVitalWorkflow`.
+message ResumeVitalWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  Vital vital = 3;
+  ResumeVitalWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeVitalWorkflow`.
+message ResumeVitalWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Vital vital = 1;
+  ResumeVitalWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectVitalWorkflow`.
+message InspectVitalWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string vital_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectVitalWorkflow`.
+message InspectVitalWorkflowResponse {
+  Vital vital = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListVitalWorkflows`.
+message ListVitalWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VitalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListVitalWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListVitalWorkflows`.
+message ListVitalWorkflowsResponse {
+  repeated Vital vitals = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

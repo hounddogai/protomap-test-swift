@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.careplans.v1;
+
+import "acme/careplans/v1/careplans.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Careplans.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/careplans/v1;careplansv1";
+option java_multiple_files = true;
+option java_outer_classname = "CareGoalValidationServiceProto";
+option java_package = "com.acme.careplans.v1";
+
+// Checks care goals against the rules before anything acts on them.
+service CareGoalValidationService {
+  // Validates a care goal.
+  rpc ValidateCareGoal(ValidateCareGoalRequest) returns (ValidateCareGoalResponse);
+
+  // Previews a care goal.
+  rpc PreviewCareGoal(PreviewCareGoalRequest) returns (PreviewCareGoalResponse);
+
+  // Checks a care goal.
+  rpc CheckCareGoalEligibility(CheckCareGoalEligibilityRequest) returns (CheckCareGoalEligibilityResponse);
+
+  // Normalizes a care goal.
+  rpc NormalizeCareGoal(NormalizeCareGoalRequest) returns (NormalizeCareGoalResponse);
+
+  // Explains a care goal.
+  rpc ExplainCareGoalDecision(ExplainCareGoalDecisionRequest) returns (ExplainCareGoalDecisionResponse);
+
+  // Scores a care goal.
+  rpc ScoreCareGoal(ScoreCareGoalRequest) returns (ScoreCareGoalResponse);
+
+  // Lints a care goal.
+  rpc LintCareGoals(LintCareGoalsRequest) returns (LintCareGoalsResponse);
+
+  // Returns a care goal.
+  rpc GetCareGoalRules(GetCareGoalRulesRequest) returns (GetCareGoalRulesResponse);
+}
+
+// The request of `ValidateCareGoal`.
+message ValidateCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  ValidateCareGoalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateCareGoal`.
+message ValidateCareGoalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  ValidateCareGoalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewCareGoal`.
+message PreviewCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  PreviewCareGoalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewCareGoal`.
+message PreviewCareGoalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  PreviewCareGoalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckCareGoalEligibility`.
+message CheckCareGoalEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  CheckCareGoalEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckCareGoalEligibility`.
+message CheckCareGoalEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  CheckCareGoalEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeCareGoal`.
+message NormalizeCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  NormalizeCareGoalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeCareGoal`.
+message NormalizeCareGoalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  NormalizeCareGoalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainCareGoalDecision`.
+message ExplainCareGoalDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  ExplainCareGoalDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainCareGoalDecision`.
+message ExplainCareGoalDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  ExplainCareGoalDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreCareGoal`.
+message ScoreCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  ScoreCareGoalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreCareGoal`.
+message ScoreCareGoalResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreCareGoalResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CareGoal care_goal = 1;
+  ScoreCareGoalResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintCareGoals`.
+message LintCareGoalsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  LintCareGoalsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintCareGoals`.
+message LintCareGoalsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  LintCareGoalsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCareGoalRules`.
+message GetCareGoalRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCareGoalRules`.
+message GetCareGoalRulesResponse {
+  CareGoal care_goal = 1;
+  acme.common.v1.OperationResult result = 2;
+}

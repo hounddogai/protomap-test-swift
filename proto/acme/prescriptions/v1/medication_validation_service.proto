@@ -1,0 +1,260 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.prescriptions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/prescriptions/v1/prescriptions.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Prescriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/prescriptions/v1;prescriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MedicationValidationServiceProto";
+option java_package = "com.acme.prescriptions.v1";
+
+// Checks medications against the rules before anything acts on them.
+service MedicationValidationService {
+  // Validates a medication.
+  rpc ValidateMedication(ValidateMedicationRequest) returns (ValidateMedicationResponse);
+
+  // Previews a medication.
+  rpc PreviewMedication(PreviewMedicationRequest) returns (PreviewMedicationResponse);
+
+  // Checks a medication.
+  rpc CheckMedicationEligibility(CheckMedicationEligibilityRequest) returns (CheckMedicationEligibilityResponse);
+
+  // Normalizes a medication.
+  rpc NormalizeMedication(NormalizeMedicationRequest) returns (NormalizeMedicationResponse);
+
+  // Explains a medication.
+  rpc ExplainMedicationDecision(ExplainMedicationDecisionRequest) returns (ExplainMedicationDecisionResponse);
+
+  // Lints a medication.
+  rpc LintMedications(LintMedicationsRequest) returns (LintMedicationsResponse);
+
+  // Returns a medication.
+  rpc GetMedicationRules(GetMedicationRulesRequest) returns (GetMedicationRulesResponse);
+}
+
+// The request of `ValidateMedication`.
+message ValidateMedicationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  ValidateMedicationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateMedication`.
+message ValidateMedicationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  ValidateMedicationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewMedication`.
+message PreviewMedicationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  PreviewMedicationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewMedication`.
+message PreviewMedicationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  PreviewMedicationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckMedicationEligibility`.
+message CheckMedicationEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  CheckMedicationEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckMedicationEligibility`.
+message CheckMedicationEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  CheckMedicationEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeMedication`.
+message NormalizeMedicationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  NormalizeMedicationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeMedication`.
+message NormalizeMedicationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  NormalizeMedicationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainMedicationDecision`.
+message ExplainMedicationDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  ExplainMedicationDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainMedicationDecision`.
+message ExplainMedicationDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  ExplainMedicationDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintMedications`.
+message LintMedicationsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  Medication medication = 3;
+  LintMedicationsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintMedications`.
+message LintMedicationsResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Medication medication = 1;
+  LintMedicationsResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetMedicationRules`.
+message GetMedicationRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string medication_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetMedicationRules`.
+message GetMedicationRulesResponse {
+  Medication medication = 1;
+  acme.common.v1.OperationResult result = 2;
+}

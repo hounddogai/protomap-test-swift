@@ -1,0 +1,258 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.telehealth.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/telehealth/v1/telehealth.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Telehealth.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/telehealth/v1;telehealthv1";
+option java_multiple_files = true;
+option java_outer_classname = "VideoVisitWorkflowServiceProto";
+option java_package = "com.acme.telehealth.v1";
+
+// Runs the long-lived workflow that takes a video visit from start to finish.
+service VideoVisitWorkflowService {
+  // Starts a video visit.
+  rpc StartVideoVisitWorkflow(StartVideoVisitWorkflowRequest) returns (StartVideoVisitWorkflowResponse);
+
+  // Advances a video visit.
+  rpc AdvanceVideoVisitWorkflow(AdvanceVideoVisitWorkflowRequest) returns (AdvanceVideoVisitWorkflowResponse);
+
+  // Cancels a video visit.
+  rpc CancelVideoVisitWorkflow(CancelVideoVisitWorkflowRequest) returns (CancelVideoVisitWorkflowResponse);
+
+  // Retrys a video visit.
+  rpc RetryVideoVisitWorkflow(RetryVideoVisitWorkflowRequest) returns (RetryVideoVisitWorkflowResponse);
+
+  // Returns a video visit.
+  rpc InspectVideoVisitWorkflow(InspectVideoVisitWorkflowRequest) returns (InspectVideoVisitWorkflowResponse);
+
+  // Lists video visits a page at a time.
+  rpc ListVideoVisitWorkflows(ListVideoVisitWorkflowsRequest) returns (ListVideoVisitWorkflowsResponse);
+
+  // Signals a video visit.
+  rpc SignalVideoVisitWorkflow(SignalVideoVisitWorkflowRequest) returns (SignalVideoVisitWorkflowResponse);
+}
+
+// The request of `StartVideoVisitWorkflow`.
+message StartVideoVisitWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  StartVideoVisitWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartVideoVisitWorkflow`.
+message StartVideoVisitWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VideoVisit video_visit = 1;
+  StartVideoVisitWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceVideoVisitWorkflow`.
+message AdvanceVideoVisitWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  AdvanceVideoVisitWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceVideoVisitWorkflow`.
+message AdvanceVideoVisitWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VideoVisit video_visit = 1;
+  AdvanceVideoVisitWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelVideoVisitWorkflow`.
+message CancelVideoVisitWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  CancelVideoVisitWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelVideoVisitWorkflow`.
+message CancelVideoVisitWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VideoVisit video_visit = 1;
+  CancelVideoVisitWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryVideoVisitWorkflow`.
+message RetryVideoVisitWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  RetryVideoVisitWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryVideoVisitWorkflow`.
+message RetryVideoVisitWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VideoVisit video_visit = 1;
+  RetryVideoVisitWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectVideoVisitWorkflow`.
+message InspectVideoVisitWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectVideoVisitWorkflow`.
+message InspectVideoVisitWorkflowResponse {
+  VideoVisit video_visit = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListVideoVisitWorkflows`.
+message ListVideoVisitWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated VideoVisitStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListVideoVisitWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListVideoVisitWorkflows`.
+message ListVideoVisitWorkflowsResponse {
+  repeated VideoVisit video_visits = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalVideoVisitWorkflow`.
+message SignalVideoVisitWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string video_visit_id = 2;
+  VideoVisit video_visit = 3;
+  SignalVideoVisitWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalVideoVisitWorkflow`.
+message SignalVideoVisitWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VideoVisit video_visit = 1;
+  SignalVideoVisitWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

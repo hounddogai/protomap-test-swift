@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MedicalRecordWorkflowServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Runs the long-lived workflow that takes a medical record from start to finish.
+service MedicalRecordWorkflowService {
+  // Starts a medical record.
+  rpc StartMedicalRecordWorkflow(StartMedicalRecordWorkflowRequest) returns (StartMedicalRecordWorkflowResponse);
+
+  // Advances a medical record.
+  rpc AdvanceMedicalRecordWorkflow(AdvanceMedicalRecordWorkflowRequest) returns (AdvanceMedicalRecordWorkflowResponse);
+
+  // Cancels a medical record.
+  rpc CancelMedicalRecordWorkflow(CancelMedicalRecordWorkflowRequest) returns (CancelMedicalRecordWorkflowResponse);
+
+  // Retrys a medical record.
+  rpc RetryMedicalRecordWorkflow(RetryMedicalRecordWorkflowRequest) returns (RetryMedicalRecordWorkflowResponse);
+
+  // Pauses a medical record.
+  rpc PauseMedicalRecordWorkflow(PauseMedicalRecordWorkflowRequest) returns (PauseMedicalRecordWorkflowResponse);
+
+  // Resumes a medical record.
+  rpc ResumeMedicalRecordWorkflow(ResumeMedicalRecordWorkflowRequest) returns (ResumeMedicalRecordWorkflowResponse);
+
+  // Returns a medical record.
+  rpc InspectMedicalRecordWorkflow(InspectMedicalRecordWorkflowRequest) returns (InspectMedicalRecordWorkflowResponse);
+
+  // Lists medical records a page at a time.
+  rpc ListMedicalRecordWorkflows(ListMedicalRecordWorkflowsRequest) returns (ListMedicalRecordWorkflowsResponse);
+
+  // Signals a medical record.
+  rpc SignalMedicalRecordWorkflow(SignalMedicalRecordWorkflowRequest) returns (SignalMedicalRecordWorkflowResponse);
+}
+
+// The request of `StartMedicalRecordWorkflow`.
+message StartMedicalRecordWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  StartMedicalRecordWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartMedicalRecordWorkflow`.
+message StartMedicalRecordWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  StartMedicalRecordWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceMedicalRecordWorkflow`.
+message AdvanceMedicalRecordWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  AdvanceMedicalRecordWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceMedicalRecordWorkflow`.
+message AdvanceMedicalRecordWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  AdvanceMedicalRecordWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelMedicalRecordWorkflow`.
+message CancelMedicalRecordWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  CancelMedicalRecordWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelMedicalRecordWorkflow`.
+message CancelMedicalRecordWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  CancelMedicalRecordWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryMedicalRecordWorkflow`.
+message RetryMedicalRecordWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  RetryMedicalRecordWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryMedicalRecordWorkflow`.
+message RetryMedicalRecordWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  RetryMedicalRecordWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseMedicalRecordWorkflow`.
+message PauseMedicalRecordWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  PauseMedicalRecordWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseMedicalRecordWorkflow`.
+message PauseMedicalRecordWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  PauseMedicalRecordWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeMedicalRecordWorkflow`.
+message ResumeMedicalRecordWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  ResumeMedicalRecordWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeMedicalRecordWorkflow`.
+message ResumeMedicalRecordWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  ResumeMedicalRecordWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectMedicalRecordWorkflow`.
+message InspectMedicalRecordWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectMedicalRecordWorkflow`.
+message InspectMedicalRecordWorkflowResponse {
+  MedicalRecord medical_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListMedicalRecordWorkflows`.
+message ListMedicalRecordWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MedicalRecordStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListMedicalRecordWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListMedicalRecordWorkflows`.
+message ListMedicalRecordWorkflowsResponse {
+  repeated MedicalRecord medical_records = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalMedicalRecordWorkflow`.
+message SignalMedicalRecordWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  SignalMedicalRecordWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalMedicalRecordWorkflow`.
+message SignalMedicalRecordWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  SignalMedicalRecordWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

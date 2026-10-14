@@ -1,0 +1,243 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "AllergyReportingServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Builds and schedules reports about allergies.
+service AllergyReportingService {
+  // Generates an allergy.
+  rpc GenerateAllergyReport(GenerateAllergyReportRequest) returns (GenerateAllergyReportResponse);
+
+  // Returns an allergy.
+  rpc FetchAllergyReport(FetchAllergyReportRequest) returns (FetchAllergyReportResponse);
+
+  // Schedules an allergy.
+  rpc ScheduleAllergyReport(ScheduleAllergyReportRequest) returns (ScheduleAllergyReportResponse);
+
+  // Streams the changes of allergies as they happen.
+  rpc StreamAllergyMetrics(StreamAllergyMetricsRequest) returns (stream StreamAllergyMetricsResponse);
+
+  // Lists allergies a page at a time.
+  rpc ListAllergyReports(ListAllergyReportsRequest) returns (ListAllergyReportsResponse);
+
+  // Shares an allergy.
+  rpc ShareAllergyReport(ShareAllergyReportRequest) returns (ShareAllergyReportResponse);
+
+  // Counts allergies by status.
+  rpc CountAllergyTotals(CountAllergyTotalsRequest) returns (CountAllergyTotalsResponse);
+
+  // Deletes an allergy.
+  rpc DeleteAllergyReport(DeleteAllergyReportRequest) returns (DeleteAllergyReportResponse);
+}
+
+// The request of `GenerateAllergyReport`.
+message GenerateAllergyReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  GenerateAllergyReportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `GenerateAllergyReport`.
+message GenerateAllergyReportResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `FetchAllergyReport`.
+message FetchAllergyReportRequest {
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `FetchAllergyReport`.
+message FetchAllergyReportResponse {
+  Allergy allergy = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleAllergyReport`.
+message ScheduleAllergyReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  ScheduleAllergyReportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ScheduleAllergyReport`.
+message ScheduleAllergyReportResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `StreamAllergyMetrics`.
+message StreamAllergyMetricsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AllergyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  StreamAllergyMetricsRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `StreamAllergyMetrics`.
+message StreamAllergyMetricsResponse {
+  Allergy allergy = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `ListAllergyReports`.
+message ListAllergyReportsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AllergyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListAllergyReportsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListAllergyReports`.
+message ListAllergyReportsResponse {
+  repeated Allergy allergies = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ShareAllergyReport`.
+message ShareAllergyReportRequest {
+  // What the operation needs besides the record.
+  message Details {
+    acme.common.v1.ContactInfo recipient = 1;
+    string template_id = 2;
+    map<string, string> variables = 3;
+    google.protobuf.Any payload = 4;
+    string channel = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  ShareAllergyReportRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ShareAllergyReport`.
+message ShareAllergyReportResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  ShareAllergyReportResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountAllergyTotals`.
+message CountAllergyTotalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AllergyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountAllergyTotalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountAllergyTotals`.
+message CountAllergyTotalsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DeleteAllergyReport`.
+message DeleteAllergyReportRequest {
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteAllergyReport`.
+message DeleteAllergyReportResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
