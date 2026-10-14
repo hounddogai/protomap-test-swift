@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.telehealth.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "acme/telehealth/v1/telehealth.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Telehealth.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/telehealth/v1;telehealthv1";
+option java_multiple_files = true;
+option java_outer_classname = "VisitNoteValidationServiceProto";
+option java_package = "com.acme.telehealth.v1";
+
+// Checks visit notes against the rules before anything acts on them.
+service VisitNoteValidationService {
+  // Validates a visit note.
+  rpc ValidateVisitNote(ValidateVisitNoteRequest) returns (ValidateVisitNoteResponse);
+
+  // Previews a visit note.
+  rpc PreviewVisitNote(PreviewVisitNoteRequest) returns (PreviewVisitNoteResponse);
+
+  // Checks a visit note.
+  rpc CheckVisitNoteEligibility(CheckVisitNoteEligibilityRequest) returns (CheckVisitNoteEligibilityResponse);
+
+  // Normalizes a visit note.
+  rpc NormalizeVisitNote(NormalizeVisitNoteRequest) returns (NormalizeVisitNoteResponse);
+
+  // Explains a visit note.
+  rpc ExplainVisitNoteDecision(ExplainVisitNoteDecisionRequest) returns (ExplainVisitNoteDecisionResponse);
+
+  // Scores a visit note.
+  rpc ScoreVisitNote(ScoreVisitNoteRequest) returns (ScoreVisitNoteResponse);
+
+  // Lints a visit note.
+  rpc LintVisitNotes(LintVisitNotesRequest) returns (LintVisitNotesResponse);
+
+  // Returns a visit note.
+  rpc GetVisitNoteRules(GetVisitNoteRulesRequest) returns (GetVisitNoteRulesResponse);
+}
+
+// The request of `ValidateVisitNote`.
+message ValidateVisitNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  VisitNote visit_note = 3;
+  ValidateVisitNoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateVisitNote`.
+message ValidateVisitNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VisitNote visit_note = 1;
+  ValidateVisitNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewVisitNote`.
+message PreviewVisitNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  VisitNote visit_note = 3;
+  PreviewVisitNoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewVisitNote`.
+message PreviewVisitNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VisitNote visit_note = 1;
+  PreviewVisitNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckVisitNoteEligibility`.
+message CheckVisitNoteEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  VisitNote visit_note = 3;
+  CheckVisitNoteEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckVisitNoteEligibility`.
+message CheckVisitNoteEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VisitNote visit_note = 1;
+  CheckVisitNoteEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeVisitNote`.
+message NormalizeVisitNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  VisitNote visit_note = 3;
+  NormalizeVisitNoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeVisitNote`.
+message NormalizeVisitNoteResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VisitNote visit_note = 1;
+  NormalizeVisitNoteResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainVisitNoteDecision`.
+message ExplainVisitNoteDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  VisitNote visit_note = 3;
+  ExplainVisitNoteDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainVisitNoteDecision`.
+message ExplainVisitNoteDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VisitNote visit_note = 1;
+  ExplainVisitNoteDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreVisitNote`.
+message ScoreVisitNoteRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  VisitNote visit_note = 3;
+  ScoreVisitNoteRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreVisitNote`.
+message ScoreVisitNoteResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreVisitNoteResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  VisitNote visit_note = 1;
+  ScoreVisitNoteResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintVisitNotes`.
+message LintVisitNotesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  VisitNote visit_note = 3;
+  LintVisitNotesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintVisitNotes`.
+message LintVisitNotesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  VisitNote visit_note = 1;
+  LintVisitNotesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetVisitNoteRules`.
+message GetVisitNoteRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string visit_note_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetVisitNoteRules`.
+message GetVisitNoteRulesResponse {
+  VisitNote visit_note = 1;
+  acme.common.v1.OperationResult result = 2;
+}

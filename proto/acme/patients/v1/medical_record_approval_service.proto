@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MedicalRecordApprovalServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Routes medical records through approval, with escalation and delegation.
+service MedicalRecordApprovalService {
+  // Submits a medical record.
+  rpc SubmitMedicalRecord(SubmitMedicalRecordRequest) returns (SubmitMedicalRecordResponse);
+
+  // Approves a medical record.
+  rpc ApproveMedicalRecord(ApproveMedicalRecordRequest) returns (ApproveMedicalRecordResponse);
+
+  // Rejects a medical record.
+  rpc RejectMedicalRecord(RejectMedicalRecordRequest) returns (RejectMedicalRecordResponse);
+
+  // Escalates a medical record.
+  rpc EscalateMedicalRecord(EscalateMedicalRecordRequest) returns (EscalateMedicalRecordResponse);
+
+  // Lists medical records a page at a time.
+  rpc ListPendingMedicalRecords(ListPendingMedicalRecordsRequest) returns (ListPendingMedicalRecordsResponse);
+
+  // Delegates a medical record.
+  rpc DelegateMedicalRecordApproval(DelegateMedicalRecordApprovalRequest) returns (DelegateMedicalRecordApprovalResponse);
+
+  // Recalls a medical record.
+  rpc RecallMedicalRecord(RecallMedicalRecordRequest) returns (RecallMedicalRecordResponse);
+
+  // Returns a medical record.
+  rpc GetMedicalRecordApprovalStatus(GetMedicalRecordApprovalStatusRequest) returns (GetMedicalRecordApprovalStatusResponse);
+
+  // Comments a medical record.
+  rpc CommentMedicalRecordApproval(CommentMedicalRecordApprovalRequest) returns (CommentMedicalRecordApprovalResponse);
+}
+
+// The request of `SubmitMedicalRecord`.
+message SubmitMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  SubmitMedicalRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitMedicalRecord`.
+message SubmitMedicalRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  SubmitMedicalRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveMedicalRecord`.
+message ApproveMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  ApproveMedicalRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveMedicalRecord`.
+message ApproveMedicalRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  ApproveMedicalRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectMedicalRecord`.
+message RejectMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  RejectMedicalRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectMedicalRecord`.
+message RejectMedicalRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  RejectMedicalRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateMedicalRecord`.
+message EscalateMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  EscalateMedicalRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateMedicalRecord`.
+message EscalateMedicalRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  EscalateMedicalRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingMedicalRecords`.
+message ListPendingMedicalRecordsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MedicalRecordStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingMedicalRecordsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingMedicalRecords`.
+message ListPendingMedicalRecordsResponse {
+  repeated MedicalRecord medical_records = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateMedicalRecordApproval`.
+message DelegateMedicalRecordApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  DelegateMedicalRecordApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateMedicalRecordApproval`.
+message DelegateMedicalRecordApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  DelegateMedicalRecordApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallMedicalRecord`.
+message RecallMedicalRecordRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  RecallMedicalRecordRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallMedicalRecord`.
+message RecallMedicalRecordResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  RecallMedicalRecordResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetMedicalRecordApprovalStatus`.
+message GetMedicalRecordApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetMedicalRecordApprovalStatus`.
+message GetMedicalRecordApprovalStatusResponse {
+  MedicalRecord medical_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentMedicalRecordApproval`.
+message CommentMedicalRecordApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  MedicalRecord medical_record = 3;
+  CommentMedicalRecordApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentMedicalRecordApproval`.
+message CommentMedicalRecordApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  MedicalRecord medical_record = 1;
+  CommentMedicalRecordApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

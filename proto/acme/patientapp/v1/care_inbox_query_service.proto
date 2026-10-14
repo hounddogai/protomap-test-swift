@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patientapp.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/patientapp/v1/patientapp.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patientapp.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patientapp/v1;patientappv1";
+option java_multiple_files = true;
+option java_outer_classname = "CareInboxQueryServiceProto";
+option java_package = "com.acme.patientapp.v1";
+
+// Answers read-only questions about care inboxes, for screens and reports.
+service CareInboxQueryService {
+  // Returns a care inbox.
+  rpc LookupCareInbox(LookupCareInboxRequest) returns (LookupCareInboxResponse);
+
+  // Lists care inboxes a page at a time.
+  rpc BrowseCareInboxes(BrowseCareInboxesRequest) returns (BrowseCareInboxesResponse);
+
+  // Lists care inboxes a page at a time.
+  rpc FindCareInboxes(FindCareInboxesRequest) returns (FindCareInboxesResponse);
+
+  // Counts care inboxes by status.
+  rpc CountCareInboxes(CountCareInboxesRequest) returns (CountCareInboxesResponse);
+
+  // Returns several care inboxes at once.
+  rpc ResolveCareInboxes(ResolveCareInboxesRequest) returns (ResolveCareInboxesResponse);
+
+  // Streams every matching care inbox.
+  rpc ExportCareInboxes(ExportCareInboxesRequest) returns (stream ExportCareInboxesResponse);
+
+  // Summarizes a care inbox.
+  rpc SummarizeCareInboxes(SummarizeCareInboxesRequest) returns (SummarizeCareInboxesResponse);
+
+  // Lists care inboxes a page at a time.
+  rpc SuggestCareInboxes(SuggestCareInboxesRequest) returns (SuggestCareInboxesResponse);
+
+  // Returns a care inbox.
+  rpc PeekCareInbox(PeekCareInboxRequest) returns (PeekCareInboxResponse);
+}
+
+// The request of `LookupCareInbox`.
+message LookupCareInboxRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_inbox_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupCareInbox`.
+message LookupCareInboxResponse {
+  CareInbox care_inbox = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseCareInboxes`.
+message BrowseCareInboxesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareInboxStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseCareInboxesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseCareInboxes`.
+message BrowseCareInboxesResponse {
+  repeated CareInbox care_inboxes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindCareInboxes`.
+message FindCareInboxesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareInboxStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindCareInboxesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindCareInboxes`.
+message FindCareInboxesResponse {
+  repeated CareInbox care_inboxes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountCareInboxes`.
+message CountCareInboxesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareInboxStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountCareInboxesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountCareInboxes`.
+message CountCareInboxesResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveCareInboxes`.
+message ResolveCareInboxesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string care_inbox_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveCareInboxes`.
+message ResolveCareInboxesResponse {
+  repeated CareInbox care_inboxes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportCareInboxes`.
+message ExportCareInboxesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareInboxStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportCareInboxesRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportCareInboxes`.
+message ExportCareInboxesResponse {
+  CareInbox care_inbox = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeCareInboxes`.
+message SummarizeCareInboxesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_inbox_id = 2;
+  SummarizeCareInboxesRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeCareInboxes`.
+message SummarizeCareInboxesResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestCareInboxes`.
+message SuggestCareInboxesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareInboxStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestCareInboxesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestCareInboxes`.
+message SuggestCareInboxesResponse {
+  repeated CareInbox care_inboxes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekCareInbox`.
+message PeekCareInboxRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_inbox_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekCareInbox`.
+message PeekCareInboxResponse {
+  CareInbox care_inbox = 1;
+  acme.common.v1.OperationResult result = 2;
+}

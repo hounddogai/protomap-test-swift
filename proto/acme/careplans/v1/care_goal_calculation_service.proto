@@ -1,0 +1,335 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.careplans.v1;
+
+import "acme/careplans/v1/careplans.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Careplans.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/careplans/v1;careplansv1";
+option java_multiple_files = true;
+option java_outer_classname = "CareGoalCalculationServiceProto";
+option java_package = "com.acme.careplans.v1";
+
+// Computes the figures of a care goal, such as totals, taxes, and estimates.
+service CareGoalCalculationService {
+  // Calculates a care goal.
+  rpc CalculateCareGoal(CalculateCareGoalRequest) returns (CalculateCareGoalResponse);
+
+  // Estimates a care goal.
+  rpc EstimateCareGoal(EstimateCareGoalRequest) returns (EstimateCareGoalResponse);
+
+  // Quotes a care goal.
+  rpc QuoteCareGoal(QuoteCareGoalRequest) returns (QuoteCareGoalResponse);
+
+  // Compares a care goal.
+  rpc CompareCareGoalOptions(CompareCareGoalOptionsRequest) returns (CompareCareGoalOptionsResponse);
+
+  // Recalculates a care goal.
+  rpc RecalculateCareGoals(RecalculateCareGoalsRequest) returns (RecalculateCareGoalsResponse);
+
+  // Simulates a care goal.
+  rpc SimulateCareGoal(SimulateCareGoalRequest) returns (SimulateCareGoalResponse);
+
+  // Explains a care goal.
+  rpc ExplainCareGoalCalculation(ExplainCareGoalCalculationRequest) returns (ExplainCareGoalCalculationResponse);
+
+  // Returns a care goal.
+  rpc GetCareGoalRates(GetCareGoalRatesRequest) returns (GetCareGoalRatesResponse);
+}
+
+// The request of `CalculateCareGoal`.
+message CalculateCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  CalculateCareGoalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CalculateCareGoal`.
+message CalculateCareGoalResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CalculateCareGoalResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CareGoal care_goal = 1;
+  CalculateCareGoalResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EstimateCareGoal`.
+message EstimateCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  EstimateCareGoalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EstimateCareGoal`.
+message EstimateCareGoalResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated EstimateCareGoalResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CareGoal care_goal = 1;
+  EstimateCareGoalResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `QuoteCareGoal`.
+message QuoteCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  QuoteCareGoalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `QuoteCareGoal`.
+message QuoteCareGoalResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated QuoteCareGoalResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CareGoal care_goal = 1;
+  QuoteCareGoalResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CompareCareGoalOptions`.
+message CompareCareGoalOptionsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  CompareCareGoalOptionsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CompareCareGoalOptions`.
+message CompareCareGoalOptionsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated CompareCareGoalOptionsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CareGoal care_goal = 1;
+  CompareCareGoalOptionsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecalculateCareGoals`.
+message RecalculateCareGoalsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  RecalculateCareGoalsRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecalculateCareGoals`.
+message RecalculateCareGoalsResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated RecalculateCareGoalsResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CareGoal care_goal = 1;
+  RecalculateCareGoalsResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SimulateCareGoal`.
+message SimulateCareGoalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  SimulateCareGoalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SimulateCareGoal`.
+message SimulateCareGoalResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated SimulateCareGoalResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CareGoal care_goal = 1;
+  SimulateCareGoalResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainCareGoalCalculation`.
+message ExplainCareGoalCalculationRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  CareGoal care_goal = 3;
+  ExplainCareGoalCalculationRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainCareGoalCalculation`.
+message ExplainCareGoalCalculationResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CareGoal care_goal = 1;
+  ExplainCareGoalCalculationResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCareGoalRates`.
+message GetCareGoalRatesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCareGoalRates`.
+message GetCareGoalRatesResponse {
+  CareGoal care_goal = 1;
+  acme.common.v1.OperationResult result = 2;
+}

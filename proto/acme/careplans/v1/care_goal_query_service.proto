@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.careplans.v1;
+
+import "acme/careplans/v1/careplans.proto";
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Careplans.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/careplans/v1;careplansv1";
+option java_multiple_files = true;
+option java_outer_classname = "CareGoalQueryServiceProto";
+option java_package = "com.acme.careplans.v1";
+
+// Answers read-only questions about care goals, for screens and reports.
+service CareGoalQueryService {
+  // Returns a care goal.
+  rpc LookupCareGoal(LookupCareGoalRequest) returns (LookupCareGoalResponse);
+
+  // Lists care goals a page at a time.
+  rpc BrowseCareGoals(BrowseCareGoalsRequest) returns (BrowseCareGoalsResponse);
+
+  // Lists care goals a page at a time.
+  rpc FindCareGoals(FindCareGoalsRequest) returns (FindCareGoalsResponse);
+
+  // Counts care goals by status.
+  rpc CountCareGoals(CountCareGoalsRequest) returns (CountCareGoalsResponse);
+
+  // Returns several care goals at once.
+  rpc ResolveCareGoals(ResolveCareGoalsRequest) returns (ResolveCareGoalsResponse);
+
+  // Streams every matching care goal.
+  rpc ExportCareGoals(ExportCareGoalsRequest) returns (stream ExportCareGoalsResponse);
+
+  // Summarizes a care goal.
+  rpc SummarizeCareGoals(SummarizeCareGoalsRequest) returns (SummarizeCareGoalsResponse);
+
+  // Lists care goals a page at a time.
+  rpc SuggestCareGoals(SuggestCareGoalsRequest) returns (SuggestCareGoalsResponse);
+
+  // Returns a care goal.
+  rpc PeekCareGoal(PeekCareGoalRequest) returns (PeekCareGoalResponse);
+}
+
+// The request of `LookupCareGoal`.
+message LookupCareGoalRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupCareGoal`.
+message LookupCareGoalResponse {
+  CareGoal care_goal = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseCareGoals`.
+message BrowseCareGoalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareGoalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseCareGoalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseCareGoals`.
+message BrowseCareGoalsResponse {
+  repeated CareGoal care_goals = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindCareGoals`.
+message FindCareGoalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareGoalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindCareGoalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindCareGoals`.
+message FindCareGoalsResponse {
+  repeated CareGoal care_goals = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountCareGoals`.
+message CountCareGoalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareGoalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountCareGoalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountCareGoals`.
+message CountCareGoalsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveCareGoals`.
+message ResolveCareGoalsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string care_goal_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveCareGoals`.
+message ResolveCareGoalsResponse {
+  repeated CareGoal care_goals = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportCareGoals`.
+message ExportCareGoalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareGoalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportCareGoalsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportCareGoals`.
+message ExportCareGoalsResponse {
+  CareGoal care_goal = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeCareGoals`.
+message SummarizeCareGoalsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  SummarizeCareGoalsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeCareGoals`.
+message SummarizeCareGoalsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestCareGoals`.
+message SuggestCareGoalsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareGoalStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestCareGoalsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestCareGoals`.
+message SuggestCareGoalsResponse {
+  repeated CareGoal care_goals = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekCareGoal`.
+message PeekCareGoalRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_goal_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekCareGoal`.
+message PeekCareGoalResponse {
+  CareGoal care_goal = 1;
+  acme.common.v1.OperationResult result = 2;
+}

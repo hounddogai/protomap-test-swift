@@ -1,0 +1,256 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "AllergySyncServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Keeps allergies in step with the systems of record in other regions.
+service AllergySyncService {
+  // Syncs an allergy.
+  rpc SyncAllergies(SyncAllergiesRequest) returns (SyncAllergiesResponse);
+
+  // Pushs an allergy.
+  rpc PushAllergy(PushAllergyRequest) returns (PushAllergyResponse);
+
+  // Pulls an allergy.
+  rpc PullAllergies(PullAllergiesRequest) returns (PullAllergiesResponse);
+
+  // Reconciles an allergy.
+  rpc ReconcileAllergies(ReconcileAllergiesRequest) returns (ReconcileAllergiesResponse);
+
+  // Resolves an allergy.
+  rpc ResolveAllergyConflict(ResolveAllergyConflictRequest) returns (ResolveAllergyConflictResponse);
+
+  // Returns an allergy.
+  rpc GetAllergySyncState(GetAllergySyncStateRequest) returns (GetAllergySyncStateResponse);
+
+  // Lists allergies a page at a time.
+  rpc ListAllergyConflicts(ListAllergyConflictsRequest) returns (ListAllergyConflictsResponse);
+}
+
+// The request of `SyncAllergies`.
+message SyncAllergiesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  SyncAllergiesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SyncAllergies`.
+message SyncAllergiesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  SyncAllergiesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PushAllergy`.
+message PushAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  PushAllergyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PushAllergy`.
+message PushAllergyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  PushAllergyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PullAllergies`.
+message PullAllergiesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  PullAllergiesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PullAllergies`.
+message PullAllergiesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  PullAllergiesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReconcileAllergies`.
+message ReconcileAllergiesRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  ReconcileAllergiesRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ReconcileAllergies`.
+message ReconcileAllergiesResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  ReconcileAllergiesResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveAllergyConflict`.
+message ResolveAllergyConflictRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string cursor = 1;
+    bytes payload = 2;
+    string resolution = 3;
+    string peer_region = 4;
+    string checksum = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  ResolveAllergyConflictRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResolveAllergyConflict`.
+message ResolveAllergyConflictResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  ResolveAllergyConflictResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetAllergySyncState`.
+message GetAllergySyncStateRequest {
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAllergySyncState`.
+message GetAllergySyncStateResponse {
+  Allergy allergy = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListAllergyConflicts`.
+message ListAllergyConflictsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AllergyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListAllergyConflictsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListAllergyConflicts`.
+message ListAllergyConflictsResponse {
+  repeated Allergy allergies = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}

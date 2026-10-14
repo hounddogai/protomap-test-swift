@@ -1,0 +1,277 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.prescriptions.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/prescriptions/v1/prescriptions.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Prescriptions.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/prescriptions/v1;prescriptionsv1";
+option java_multiple_files = true;
+option java_outer_classname = "PrescriptionLifecycleServiceProto";
+option java_package = "com.acme.prescriptions.v1";
+
+// Moves a prescription between the states of its lifecycle.
+service PrescriptionLifecycleService {
+  // Activates a prescription.
+  rpc ActivatePrescription(ActivatePrescriptionRequest) returns (ActivatePrescriptionResponse);
+
+  // Suspends a prescription.
+  rpc SuspendPrescription(SuspendPrescriptionRequest) returns (SuspendPrescriptionResponse);
+
+  // Reinstates a prescription.
+  rpc ReinstatePrescription(ReinstatePrescriptionRequest) returns (ReinstatePrescriptionResponse);
+
+  // Terminates a prescription.
+  rpc TerminatePrescription(TerminatePrescriptionRequest) returns (TerminatePrescriptionResponse);
+
+  // Renews a prescription.
+  rpc RenewPrescription(RenewPrescriptionRequest) returns (RenewPrescriptionResponse);
+
+  // Expires a prescription.
+  rpc ExpirePrescription(ExpirePrescriptionRequest) returns (ExpirePrescriptionResponse);
+
+  // Schedules a prescription.
+  rpc SchedulePrescriptionExpiry(SchedulePrescriptionExpiryRequest) returns (SchedulePrescriptionExpiryResponse);
+}
+
+// The request of `ActivatePrescription`.
+message ActivatePrescriptionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  ActivatePrescriptionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivatePrescription`.
+message ActivatePrescriptionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Prescription prescription = 1;
+  ActivatePrescriptionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendPrescription`.
+message SuspendPrescriptionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  SuspendPrescriptionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendPrescription`.
+message SuspendPrescriptionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Prescription prescription = 1;
+  SuspendPrescriptionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstatePrescription`.
+message ReinstatePrescriptionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  ReinstatePrescriptionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstatePrescription`.
+message ReinstatePrescriptionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Prescription prescription = 1;
+  ReinstatePrescriptionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminatePrescription`.
+message TerminatePrescriptionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  TerminatePrescriptionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminatePrescription`.
+message TerminatePrescriptionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Prescription prescription = 1;
+  TerminatePrescriptionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewPrescription`.
+message RenewPrescriptionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  RenewPrescriptionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewPrescription`.
+message RenewPrescriptionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Prescription prescription = 1;
+  RenewPrescriptionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpirePrescription`.
+message ExpirePrescriptionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  ExpirePrescriptionRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpirePrescription`.
+message ExpirePrescriptionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Prescription prescription = 1;
+  ExpirePrescriptionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SchedulePrescriptionExpiry`.
+message SchedulePrescriptionExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string prescription_id = 2;
+  Prescription prescription = 3;
+  SchedulePrescriptionExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SchedulePrescriptionExpiry`.
+message SchedulePrescriptionExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Prescription prescription = 1;
+  SchedulePrescriptionExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

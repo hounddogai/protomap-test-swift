@@ -1,0 +1,334 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.appointments.v1;
+
+import "acme/appointments/v1/appointments.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Appointments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/appointments/v1;appointmentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProviderWorkflowServiceProto";
+option java_package = "com.acme.appointments.v1";
+
+// Runs the long-lived workflow that takes a provider from start to finish.
+service ProviderWorkflowService {
+  // Starts a provider.
+  rpc StartProviderWorkflow(StartProviderWorkflowRequest) returns (StartProviderWorkflowResponse);
+
+  // Advances a provider.
+  rpc AdvanceProviderWorkflow(AdvanceProviderWorkflowRequest) returns (AdvanceProviderWorkflowResponse);
+
+  // Cancels a provider.
+  rpc CancelProviderWorkflow(CancelProviderWorkflowRequest) returns (CancelProviderWorkflowResponse);
+
+  // Retrys a provider.
+  rpc RetryProviderWorkflow(RetryProviderWorkflowRequest) returns (RetryProviderWorkflowResponse);
+
+  // Pauses a provider.
+  rpc PauseProviderWorkflow(PauseProviderWorkflowRequest) returns (PauseProviderWorkflowResponse);
+
+  // Resumes a provider.
+  rpc ResumeProviderWorkflow(ResumeProviderWorkflowRequest) returns (ResumeProviderWorkflowResponse);
+
+  // Returns a provider.
+  rpc InspectProviderWorkflow(InspectProviderWorkflowRequest) returns (InspectProviderWorkflowResponse);
+
+  // Lists providers a page at a time.
+  rpc ListProviderWorkflows(ListProviderWorkflowsRequest) returns (ListProviderWorkflowsResponse);
+
+  // Signals a provider.
+  rpc SignalProviderWorkflow(SignalProviderWorkflowRequest) returns (SignalProviderWorkflowResponse);
+}
+
+// The request of `StartProviderWorkflow`.
+message StartProviderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  Provider provider = 3;
+  StartProviderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartProviderWorkflow`.
+message StartProviderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Provider provider = 1;
+  StartProviderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceProviderWorkflow`.
+message AdvanceProviderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  Provider provider = 3;
+  AdvanceProviderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceProviderWorkflow`.
+message AdvanceProviderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Provider provider = 1;
+  AdvanceProviderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelProviderWorkflow`.
+message CancelProviderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  Provider provider = 3;
+  CancelProviderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelProviderWorkflow`.
+message CancelProviderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Provider provider = 1;
+  CancelProviderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryProviderWorkflow`.
+message RetryProviderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  Provider provider = 3;
+  RetryProviderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryProviderWorkflow`.
+message RetryProviderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Provider provider = 1;
+  RetryProviderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseProviderWorkflow`.
+message PauseProviderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  Provider provider = 3;
+  PauseProviderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseProviderWorkflow`.
+message PauseProviderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Provider provider = 1;
+  PauseProviderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeProviderWorkflow`.
+message ResumeProviderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  Provider provider = 3;
+  ResumeProviderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeProviderWorkflow`.
+message ResumeProviderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Provider provider = 1;
+  ResumeProviderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectProviderWorkflow`.
+message InspectProviderWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectProviderWorkflow`.
+message InspectProviderWorkflowResponse {
+  Provider provider = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListProviderWorkflows`.
+message ListProviderWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProviderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListProviderWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListProviderWorkflows`.
+message ListProviderWorkflowsResponse {
+  repeated Provider providers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalProviderWorkflow`.
+message SignalProviderWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  Provider provider = 3;
+  SignalProviderWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalProviderWorkflow`.
+message SignalProviderWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Provider provider = 1;
+  SignalProviderWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

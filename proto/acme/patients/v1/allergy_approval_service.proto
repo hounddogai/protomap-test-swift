@@ -1,0 +1,333 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "AllergyApprovalServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Routes allergies through approval, with escalation and delegation.
+service AllergyApprovalService {
+  // Submits an allergy.
+  rpc SubmitAllergy(SubmitAllergyRequest) returns (SubmitAllergyResponse);
+
+  // Approves an allergy.
+  rpc ApproveAllergy(ApproveAllergyRequest) returns (ApproveAllergyResponse);
+
+  // Rejects an allergy.
+  rpc RejectAllergy(RejectAllergyRequest) returns (RejectAllergyResponse);
+
+  // Escalates an allergy.
+  rpc EscalateAllergy(EscalateAllergyRequest) returns (EscalateAllergyResponse);
+
+  // Lists allergies a page at a time.
+  rpc ListPendingAllergies(ListPendingAllergiesRequest) returns (ListPendingAllergiesResponse);
+
+  // Delegates an allergy.
+  rpc DelegateAllergyApproval(DelegateAllergyApprovalRequest) returns (DelegateAllergyApprovalResponse);
+
+  // Recalls an allergy.
+  rpc RecallAllergy(RecallAllergyRequest) returns (RecallAllergyResponse);
+
+  // Returns an allergy.
+  rpc GetAllergyApprovalStatus(GetAllergyApprovalStatusRequest) returns (GetAllergyApprovalStatusResponse);
+
+  // Comments an allergy.
+  rpc CommentAllergyApproval(CommentAllergyApprovalRequest) returns (CommentAllergyApprovalResponse);
+}
+
+// The request of `SubmitAllergy`.
+message SubmitAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  SubmitAllergyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitAllergy`.
+message SubmitAllergyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  SubmitAllergyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveAllergy`.
+message ApproveAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  ApproveAllergyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveAllergy`.
+message ApproveAllergyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  ApproveAllergyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RejectAllergy`.
+message RejectAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  RejectAllergyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RejectAllergy`.
+message RejectAllergyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  RejectAllergyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateAllergy`.
+message EscalateAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  EscalateAllergyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateAllergy`.
+message EscalateAllergyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  EscalateAllergyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingAllergies`.
+message ListPendingAllergiesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated AllergyStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingAllergiesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingAllergies`.
+message ListPendingAllergiesResponse {
+  repeated Allergy allergies = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateAllergyApproval`.
+message DelegateAllergyApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  DelegateAllergyApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateAllergyApproval`.
+message DelegateAllergyApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  DelegateAllergyApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallAllergy`.
+message RecallAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  RecallAllergyRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallAllergy`.
+message RecallAllergyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  RecallAllergyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetAllergyApprovalStatus`.
+message GetAllergyApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAllergyApprovalStatus`.
+message GetAllergyApprovalStatusResponse {
+  Allergy allergy = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `CommentAllergyApproval`.
+message CommentAllergyApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  CommentAllergyApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CommentAllergyApproval`.
+message CommentAllergyApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  CommentAllergyApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

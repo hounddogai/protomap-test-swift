@@ -1,0 +1,245 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/audit.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "MedicalRecordQueryServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Answers read-only questions about medical records, for screens and reports.
+service MedicalRecordQueryService {
+  // Returns a medical record.
+  rpc LookupMedicalRecord(LookupMedicalRecordRequest) returns (LookupMedicalRecordResponse);
+
+  // Lists medical records a page at a time.
+  rpc BrowseMedicalRecords(BrowseMedicalRecordsRequest) returns (BrowseMedicalRecordsResponse);
+
+  // Lists medical records a page at a time.
+  rpc FindMedicalRecords(FindMedicalRecordsRequest) returns (FindMedicalRecordsResponse);
+
+  // Counts medical records by status.
+  rpc CountMedicalRecords(CountMedicalRecordsRequest) returns (CountMedicalRecordsResponse);
+
+  // Returns several medical records at once.
+  rpc ResolveMedicalRecords(ResolveMedicalRecordsRequest) returns (ResolveMedicalRecordsResponse);
+
+  // Streams every matching medical record.
+  rpc ExportMedicalRecords(ExportMedicalRecordsRequest) returns (stream ExportMedicalRecordsResponse);
+
+  // Summarizes a medical record.
+  rpc SummarizeMedicalRecords(SummarizeMedicalRecordsRequest) returns (SummarizeMedicalRecordsResponse);
+
+  // Lists medical records a page at a time.
+  rpc SuggestMedicalRecords(SuggestMedicalRecordsRequest) returns (SuggestMedicalRecordsResponse);
+
+  // Returns a medical record.
+  rpc PeekMedicalRecord(PeekMedicalRecordRequest) returns (PeekMedicalRecordResponse);
+}
+
+// The request of `LookupMedicalRecord`.
+message LookupMedicalRecordRequest {
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `LookupMedicalRecord`.
+message LookupMedicalRecordResponse {
+  MedicalRecord medical_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `BrowseMedicalRecords`.
+message BrowseMedicalRecordsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MedicalRecordStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  BrowseMedicalRecordsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `BrowseMedicalRecords`.
+message BrowseMedicalRecordsResponse {
+  repeated MedicalRecord medical_records = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `FindMedicalRecords`.
+message FindMedicalRecordsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MedicalRecordStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  FindMedicalRecordsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `FindMedicalRecords`.
+message FindMedicalRecordsResponse {
+  repeated MedicalRecord medical_records = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CountMedicalRecords`.
+message CountMedicalRecordsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MedicalRecordStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  CountMedicalRecordsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `CountMedicalRecords`.
+message CountMedicalRecordsResponse {
+  int64 count = 1;
+  map<string, int64> by_status = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResolveMedicalRecords`.
+message ResolveMedicalRecordsRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string medical_record_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `ResolveMedicalRecords`.
+message ResolveMedicalRecordsResponse {
+  repeated MedicalRecord medical_records = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExportMedicalRecords`.
+message ExportMedicalRecordsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MedicalRecordStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  ExportMedicalRecordsRequest.Filter filter = 2;
+  string format = 3;
+  google.protobuf.FieldMask fields = 4;
+  string destination_uri = 5;
+}
+
+// The response of `ExportMedicalRecords`.
+message ExportMedicalRecordsResponse {
+  MedicalRecord medical_record = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SummarizeMedicalRecords`.
+message SummarizeMedicalRecordsRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string format = 1;
+    acme.common.v1.TimeWindow period = 2;
+    repeated string recipient_emails = 3;
+    string cron = 4;
+    map<string, string> filters = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  SummarizeMedicalRecordsRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SummarizeMedicalRecords`.
+message SummarizeMedicalRecordsResponse {
+  string report_id = 1;
+  string download_uri = 2;
+  map<string, string> summary = 3;
+  acme.common.v1.TimeWindow period = 4;
+  acme.common.v1.OperationResult result = 5;
+}
+
+// The request of `SuggestMedicalRecords`.
+message SuggestMedicalRecordsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated MedicalRecordStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SuggestMedicalRecordsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SuggestMedicalRecords`.
+message SuggestMedicalRecordsResponse {
+  repeated MedicalRecord medical_records = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PeekMedicalRecord`.
+message PeekMedicalRecordRequest {
+  acme.common.v1.RequestContext context = 1;
+  string medical_record_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `PeekMedicalRecord`.
+message PeekMedicalRecordResponse {
+  MedicalRecord medical_record = 1;
+  acme.common.v1.OperationResult result = 2;
+}

@@ -1,0 +1,296 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.appointments.v1;
+
+import "acme/appointments/v1/appointments.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Appointments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/appointments/v1;appointmentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ClinicSlotWorkflowServiceProto";
+option java_package = "com.acme.appointments.v1";
+
+// Runs the long-lived workflow that takes a clinic slot from start to finish.
+service ClinicSlotWorkflowService {
+  // Starts a clinic slot.
+  rpc StartClinicSlotWorkflow(StartClinicSlotWorkflowRequest) returns (StartClinicSlotWorkflowResponse);
+
+  // Advances a clinic slot.
+  rpc AdvanceClinicSlotWorkflow(AdvanceClinicSlotWorkflowRequest) returns (AdvanceClinicSlotWorkflowResponse);
+
+  // Retrys a clinic slot.
+  rpc RetryClinicSlotWorkflow(RetryClinicSlotWorkflowRequest) returns (RetryClinicSlotWorkflowResponse);
+
+  // Pauses a clinic slot.
+  rpc PauseClinicSlotWorkflow(PauseClinicSlotWorkflowRequest) returns (PauseClinicSlotWorkflowResponse);
+
+  // Resumes a clinic slot.
+  rpc ResumeClinicSlotWorkflow(ResumeClinicSlotWorkflowRequest) returns (ResumeClinicSlotWorkflowResponse);
+
+  // Returns a clinic slot.
+  rpc InspectClinicSlotWorkflow(InspectClinicSlotWorkflowRequest) returns (InspectClinicSlotWorkflowResponse);
+
+  // Lists clinic slots a page at a time.
+  rpc ListClinicSlotWorkflows(ListClinicSlotWorkflowsRequest) returns (ListClinicSlotWorkflowsResponse);
+
+  // Signals a clinic slot.
+  rpc SignalClinicSlotWorkflow(SignalClinicSlotWorkflowRequest) returns (SignalClinicSlotWorkflowResponse);
+}
+
+// The request of `StartClinicSlotWorkflow`.
+message StartClinicSlotWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string clinic_slot_id = 2;
+  ClinicSlot clinic_slot = 3;
+  StartClinicSlotWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartClinicSlotWorkflow`.
+message StartClinicSlotWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ClinicSlot clinic_slot = 1;
+  StartClinicSlotWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceClinicSlotWorkflow`.
+message AdvanceClinicSlotWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string clinic_slot_id = 2;
+  ClinicSlot clinic_slot = 3;
+  AdvanceClinicSlotWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceClinicSlotWorkflow`.
+message AdvanceClinicSlotWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ClinicSlot clinic_slot = 1;
+  AdvanceClinicSlotWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RetryClinicSlotWorkflow`.
+message RetryClinicSlotWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string clinic_slot_id = 2;
+  ClinicSlot clinic_slot = 3;
+  RetryClinicSlotWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RetryClinicSlotWorkflow`.
+message RetryClinicSlotWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ClinicSlot clinic_slot = 1;
+  RetryClinicSlotWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PauseClinicSlotWorkflow`.
+message PauseClinicSlotWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string clinic_slot_id = 2;
+  ClinicSlot clinic_slot = 3;
+  PauseClinicSlotWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PauseClinicSlotWorkflow`.
+message PauseClinicSlotWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ClinicSlot clinic_slot = 1;
+  PauseClinicSlotWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeClinicSlotWorkflow`.
+message ResumeClinicSlotWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string clinic_slot_id = 2;
+  ClinicSlot clinic_slot = 3;
+  ResumeClinicSlotWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeClinicSlotWorkflow`.
+message ResumeClinicSlotWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ClinicSlot clinic_slot = 1;
+  ResumeClinicSlotWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectClinicSlotWorkflow`.
+message InspectClinicSlotWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string clinic_slot_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectClinicSlotWorkflow`.
+message InspectClinicSlotWorkflowResponse {
+  ClinicSlot clinic_slot = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListClinicSlotWorkflows`.
+message ListClinicSlotWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ClinicSlotStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListClinicSlotWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListClinicSlotWorkflows`.
+message ListClinicSlotWorkflowsResponse {
+  repeated ClinicSlot clinic_slots = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalClinicSlotWorkflow`.
+message SignalClinicSlotWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string clinic_slot_id = 2;
+  ClinicSlot clinic_slot = 3;
+  SignalClinicSlotWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalClinicSlotWorkflow`.
+message SignalClinicSlotWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  ClinicSlot clinic_slot = 1;
+  SignalClinicSlotWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

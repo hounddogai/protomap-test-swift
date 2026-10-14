@@ -1,0 +1,258 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.careplans.v1;
+
+import "acme/careplans/v1/careplans.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Careplans.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/careplans/v1;careplansv1";
+option java_multiple_files = true;
+option java_outer_classname = "CarePlanWorkflowServiceProto";
+option java_package = "com.acme.careplans.v1";
+
+// Runs the long-lived workflow that takes a care plan from start to finish.
+service CarePlanWorkflowService {
+  // Starts a care plan.
+  rpc StartCarePlanWorkflow(StartCarePlanWorkflowRequest) returns (StartCarePlanWorkflowResponse);
+
+  // Advances a care plan.
+  rpc AdvanceCarePlanWorkflow(AdvanceCarePlanWorkflowRequest) returns (AdvanceCarePlanWorkflowResponse);
+
+  // Cancels a care plan.
+  rpc CancelCarePlanWorkflow(CancelCarePlanWorkflowRequest) returns (CancelCarePlanWorkflowResponse);
+
+  // Resumes a care plan.
+  rpc ResumeCarePlanWorkflow(ResumeCarePlanWorkflowRequest) returns (ResumeCarePlanWorkflowResponse);
+
+  // Returns a care plan.
+  rpc InspectCarePlanWorkflow(InspectCarePlanWorkflowRequest) returns (InspectCarePlanWorkflowResponse);
+
+  // Lists care plans a page at a time.
+  rpc ListCarePlanWorkflows(ListCarePlanWorkflowsRequest) returns (ListCarePlanWorkflowsResponse);
+
+  // Signals a care plan.
+  rpc SignalCarePlanWorkflow(SignalCarePlanWorkflowRequest) returns (SignalCarePlanWorkflowResponse);
+}
+
+// The request of `StartCarePlanWorkflow`.
+message StartCarePlanWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  StartCarePlanWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartCarePlanWorkflow`.
+message StartCarePlanWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  StartCarePlanWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `AdvanceCarePlanWorkflow`.
+message AdvanceCarePlanWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  AdvanceCarePlanWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `AdvanceCarePlanWorkflow`.
+message AdvanceCarePlanWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  AdvanceCarePlanWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CancelCarePlanWorkflow`.
+message CancelCarePlanWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  CancelCarePlanWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CancelCarePlanWorkflow`.
+message CancelCarePlanWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  CancelCarePlanWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ResumeCarePlanWorkflow`.
+message ResumeCarePlanWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  ResumeCarePlanWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ResumeCarePlanWorkflow`.
+message ResumeCarePlanWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  ResumeCarePlanWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `InspectCarePlanWorkflow`.
+message InspectCarePlanWorkflowRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `InspectCarePlanWorkflow`.
+message InspectCarePlanWorkflowResponse {
+  CarePlan care_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ListCarePlanWorkflows`.
+message ListCarePlanWorkflowsRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CarePlanStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListCarePlanWorkflowsRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListCarePlanWorkflows`.
+message ListCarePlanWorkflowsResponse {
+  repeated CarePlan care_plans = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SignalCarePlanWorkflow`.
+message SignalCarePlanWorkflowRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  SignalCarePlanWorkflowRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SignalCarePlanWorkflow`.
+message SignalCarePlanWorkflowResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  SignalCarePlanWorkflowResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

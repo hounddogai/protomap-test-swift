@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.telehealth.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/telehealth/v1/telehealth.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Telehealth.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/telehealth/v1;telehealthv1";
+option java_multiple_files = true;
+option java_outer_classname = "TriageLifecycleServiceProto";
+option java_package = "com.acme.telehealth.v1";
+
+// Moves a triage between the states of its lifecycle.
+service TriageLifecycleService {
+  // Activates a triage.
+  rpc ActivateTriage(ActivateTriageRequest) returns (ActivateTriageResponse);
+
+  // Suspends a triage.
+  rpc SuspendTriage(SuspendTriageRequest) returns (SuspendTriageResponse);
+
+  // Reinstates a triage.
+  rpc ReinstateTriage(ReinstateTriageRequest) returns (ReinstateTriageResponse);
+
+  // Terminates a triage.
+  rpc TerminateTriage(TerminateTriageRequest) returns (TerminateTriageResponse);
+
+  // Renews a triage.
+  rpc RenewTriage(RenewTriageRequest) returns (RenewTriageResponse);
+
+  // Expires a triage.
+  rpc ExpireTriage(ExpireTriageRequest) returns (ExpireTriageResponse);
+
+  // Returns a triage.
+  rpc GetTriageLifecycle(GetTriageLifecycleRequest) returns (GetTriageLifecycleResponse);
+
+  // Schedules a triage.
+  rpc ScheduleTriageExpiry(ScheduleTriageExpiryRequest) returns (ScheduleTriageExpiryResponse);
+}
+
+// The request of `ActivateTriage`.
+message ActivateTriageRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  ActivateTriageRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateTriage`.
+message ActivateTriageResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Triage triage = 1;
+  ActivateTriageResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendTriage`.
+message SuspendTriageRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  SuspendTriageRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendTriage`.
+message SuspendTriageResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Triage triage = 1;
+  SuspendTriageResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateTriage`.
+message ReinstateTriageRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  ReinstateTriageRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateTriage`.
+message ReinstateTriageResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Triage triage = 1;
+  ReinstateTriageResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateTriage`.
+message TerminateTriageRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  TerminateTriageRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateTriage`.
+message TerminateTriageResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Triage triage = 1;
+  TerminateTriageResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewTriage`.
+message RenewTriageRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  RenewTriageRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewTriage`.
+message RenewTriageResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Triage triage = 1;
+  RenewTriageResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireTriage`.
+message ExpireTriageRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  ExpireTriageRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireTriage`.
+message ExpireTriageResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Triage triage = 1;
+  ExpireTriageResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetTriageLifecycle`.
+message GetTriageLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetTriageLifecycle`.
+message GetTriageLifecycleResponse {
+  Triage triage = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleTriageExpiry`.
+message ScheduleTriageExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string triage_id = 2;
+  Triage triage = 3;
+  ScheduleTriageExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleTriageExpiry`.
+message ScheduleTriageExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Triage triage = 1;
+  ScheduleTriageExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

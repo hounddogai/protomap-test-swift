@@ -1,0 +1,294 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patients.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/identity/v1/refs.proto";
+import "acme/patients/v1/patients.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patients.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patients/v1;patientsv1";
+option java_multiple_files = true;
+option java_outer_classname = "AllergyLifecycleServiceProto";
+option java_package = "com.acme.patients.v1";
+
+// Moves an allergy between the states of its lifecycle.
+service AllergyLifecycleService {
+  // Activates an allergy.
+  rpc ActivateAllergy(ActivateAllergyRequest) returns (ActivateAllergyResponse);
+
+  // Suspends an allergy.
+  rpc SuspendAllergy(SuspendAllergyRequest) returns (SuspendAllergyResponse);
+
+  // Reinstates an allergy.
+  rpc ReinstateAllergy(ReinstateAllergyRequest) returns (ReinstateAllergyResponse);
+
+  // Terminates an allergy.
+  rpc TerminateAllergy(TerminateAllergyRequest) returns (TerminateAllergyResponse);
+
+  // Renews an allergy.
+  rpc RenewAllergy(RenewAllergyRequest) returns (RenewAllergyResponse);
+
+  // Expires an allergy.
+  rpc ExpireAllergy(ExpireAllergyRequest) returns (ExpireAllergyResponse);
+
+  // Returns an allergy.
+  rpc GetAllergyLifecycle(GetAllergyLifecycleRequest) returns (GetAllergyLifecycleResponse);
+
+  // Schedules an allergy.
+  rpc ScheduleAllergyExpiry(ScheduleAllergyExpiryRequest) returns (ScheduleAllergyExpiryResponse);
+}
+
+// The request of `ActivateAllergy`.
+message ActivateAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  ActivateAllergyRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ActivateAllergy`.
+message ActivateAllergyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  ActivateAllergyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SuspendAllergy`.
+message SuspendAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  SuspendAllergyRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `SuspendAllergy`.
+message SuspendAllergyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  SuspendAllergyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ReinstateAllergy`.
+message ReinstateAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  ReinstateAllergyRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ReinstateAllergy`.
+message ReinstateAllergyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  ReinstateAllergyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `TerminateAllergy`.
+message TerminateAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  TerminateAllergyRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `TerminateAllergy`.
+message TerminateAllergyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  TerminateAllergyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RenewAllergy`.
+message RenewAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  RenewAllergyRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `RenewAllergy`.
+message RenewAllergyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  RenewAllergyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExpireAllergy`.
+message ExpireAllergyRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string reason_code = 1;
+    google.protobuf.Timestamp effective_at = 2;
+    acme.identity.v1.UserRef new_owner = 3;
+    acme.common.v1.ContactInfo notify_contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  ExpireAllergyRequest.Details details = 3;
+  string reason = 4;
+  map<string, string> annotations = 5;
+}
+
+// The response of `ExpireAllergy`.
+message ExpireAllergyResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  ExpireAllergyResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetAllergyLifecycle`.
+message GetAllergyLifecycleRequest {
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetAllergyLifecycle`.
+message GetAllergyLifecycleResponse {
+  Allergy allergy = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ScheduleAllergyExpiry`.
+message ScheduleAllergyExpiryRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string allergy_id = 2;
+  Allergy allergy = 3;
+  ScheduleAllergyExpiryRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScheduleAllergyExpiry`.
+message ScheduleAllergyExpiryResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Allergy allergy = 1;
+  ScheduleAllergyExpiryResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}

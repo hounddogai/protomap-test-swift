@@ -1,0 +1,305 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.careplans.v1;
+
+import "acme/careplans/v1/careplans.proto";
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/money.proto";
+import "acme/common/v1/operation.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Careplans.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/careplans/v1;careplansv1";
+option java_multiple_files = true;
+option java_outer_classname = "CarePlanValidationServiceProto";
+option java_package = "com.acme.careplans.v1";
+
+// Checks care plans against the rules before anything acts on them.
+service CarePlanValidationService {
+  // Validates a care plan.
+  rpc ValidateCarePlan(ValidateCarePlanRequest) returns (ValidateCarePlanResponse);
+
+  // Previews a care plan.
+  rpc PreviewCarePlan(PreviewCarePlanRequest) returns (PreviewCarePlanResponse);
+
+  // Checks a care plan.
+  rpc CheckCarePlanEligibility(CheckCarePlanEligibilityRequest) returns (CheckCarePlanEligibilityResponse);
+
+  // Normalizes a care plan.
+  rpc NormalizeCarePlan(NormalizeCarePlanRequest) returns (NormalizeCarePlanResponse);
+
+  // Explains a care plan.
+  rpc ExplainCarePlanDecision(ExplainCarePlanDecisionRequest) returns (ExplainCarePlanDecisionResponse);
+
+  // Scores a care plan.
+  rpc ScoreCarePlan(ScoreCarePlanRequest) returns (ScoreCarePlanResponse);
+
+  // Lints a care plan.
+  rpc LintCarePlans(LintCarePlansRequest) returns (LintCarePlansResponse);
+
+  // Returns a care plan.
+  rpc GetCarePlanRules(GetCarePlanRulesRequest) returns (GetCarePlanRulesResponse);
+}
+
+// The request of `ValidateCarePlan`.
+message ValidateCarePlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  ValidateCarePlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ValidateCarePlan`.
+message ValidateCarePlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  ValidateCarePlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `PreviewCarePlan`.
+message PreviewCarePlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  PreviewCarePlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `PreviewCarePlan`.
+message PreviewCarePlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  PreviewCarePlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `CheckCarePlanEligibility`.
+message CheckCarePlanEligibilityRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  CheckCarePlanEligibilityRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `CheckCarePlanEligibility`.
+message CheckCarePlanEligibilityResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  CheckCarePlanEligibilityResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `NormalizeCarePlan`.
+message NormalizeCarePlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  NormalizeCarePlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `NormalizeCarePlan`.
+message NormalizeCarePlanResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  NormalizeCarePlanResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ExplainCarePlanDecision`.
+message ExplainCarePlanDecisionRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  ExplainCarePlanDecisionRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ExplainCarePlanDecision`.
+message ExplainCarePlanDecisionResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  ExplainCarePlanDecisionResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ScoreCarePlan`.
+message ScoreCarePlanRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string currency_code = 1;
+    acme.common.v1.PostalAddress destination = 2;
+    repeated string scenario_ids = 3;
+    bool include_breakdown = 4;
+    acme.common.v1.Money budget = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  ScoreCarePlanRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ScoreCarePlan`.
+message ScoreCarePlanResponse {
+  // How a figure was reached.
+  message Breakdown {
+    // One line of a breakdown.
+    message Line {
+      string label = 1;
+      acme.common.v1.Money amount = 2;
+      double rate = 3;
+    }
+
+    acme.common.v1.Money total = 1;
+    repeated ScoreCarePlanResponse.Breakdown.Line lines = 2;
+    string currency_code = 3;
+  }
+
+  CarePlan care_plan = 1;
+  ScoreCarePlanResponse.Breakdown breakdown = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `LintCarePlans`.
+message LintCarePlansRequest {
+  // What the operation needs besides the record.
+  message Details {
+    repeated string rules = 1;
+    bool strict = 2;
+    string locale = 3;
+    acme.common.v1.ContactInfo contact = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  CarePlan care_plan = 3;
+  LintCarePlansRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `LintCarePlans`.
+message LintCarePlansResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  CarePlan care_plan = 1;
+  LintCarePlansResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetCarePlanRules`.
+message GetCarePlanRulesRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_plan_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCarePlanRules`.
+message GetCarePlanRulesResponse {
+  CarePlan care_plan = 1;
+  acme.common.v1.OperationResult result = 2;
+}

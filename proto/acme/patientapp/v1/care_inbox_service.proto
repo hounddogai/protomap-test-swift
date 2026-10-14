@@ -1,0 +1,167 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patientapp.v1;
+
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/patientapp/v1/patientapp.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patientapp.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patientapp/v1;patientappv1";
+option java_multiple_files = true;
+option java_outer_classname = "CareInboxServiceProto";
+option java_package = "com.acme.patientapp.v1";
+
+// Manages care inboxes: creates, reads, changes, and lists them.
+service CareInboxService {
+  // Creates a care inbox.
+  rpc CreateCareInbox(CreateCareInboxRequest) returns (CreateCareInboxResponse);
+
+  // Returns a care inbox.
+  rpc GetCareInbox(GetCareInboxRequest) returns (GetCareInboxResponse);
+
+  // Changes a care inbox.
+  rpc UpdateCareInbox(UpdateCareInboxRequest) returns (UpdateCareInboxResponse);
+
+  // Deletes a care inbox.
+  rpc DeleteCareInbox(DeleteCareInboxRequest) returns (DeleteCareInboxResponse);
+
+  // Returns several care inboxes at once.
+  rpc BatchGetCareInboxes(BatchGetCareInboxesRequest) returns (BatchGetCareInboxesResponse);
+
+  // Lists care inboxes a page at a time.
+  rpc SearchCareInboxes(SearchCareInboxesRequest) returns (SearchCareInboxesResponse);
+
+  // Streams the changes of care inboxes as they happen.
+  rpc WatchCareInboxes(WatchCareInboxesRequest) returns (stream WatchCareInboxesResponse);
+}
+
+// The request of `CreateCareInbox`.
+message CreateCareInboxRequest {
+  acme.common.v1.RequestContext context = 1;
+  CareInbox care_inbox = 2;
+  string request_id = 3;
+  bool validate_only = 4;
+}
+
+// The response of `CreateCareInbox`.
+message CreateCareInboxResponse {
+  CareInbox care_inbox = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `GetCareInbox`.
+message GetCareInboxRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_inbox_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetCareInbox`.
+message GetCareInboxResponse {
+  CareInbox care_inbox = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UpdateCareInbox`.
+message UpdateCareInboxRequest {
+  acme.common.v1.RequestContext context = 1;
+  CareInbox care_inbox = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  bool allow_missing = 4;
+}
+
+// The response of `UpdateCareInbox`.
+message UpdateCareInboxResponse {
+  CareInbox care_inbox = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `DeleteCareInbox`.
+message DeleteCareInboxRequest {
+  acme.common.v1.RequestContext context = 1;
+  string care_inbox_id = 2;
+  string reason = 3;
+  string etag = 4;
+  bool force = 5;
+}
+
+// The response of `DeleteCareInbox`.
+message DeleteCareInboxResponse {
+  acme.common.v1.OperationResult result = 1;
+  google.protobuf.Timestamp effective_at = 2;
+}
+
+// The request of `BatchGetCareInboxes`.
+message BatchGetCareInboxesRequest {
+  acme.common.v1.RequestContext context = 1;
+  repeated string care_inbox_ids = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `BatchGetCareInboxes`.
+message BatchGetCareInboxesResponse {
+  repeated CareInbox care_inboxes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `SearchCareInboxes`.
+message SearchCareInboxesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareInboxStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchCareInboxesRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchCareInboxes`.
+message SearchCareInboxesResponse {
+  repeated CareInbox care_inboxes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `WatchCareInboxes`.
+message WatchCareInboxesRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated CareInboxStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  WatchCareInboxesRequest.Filter filter = 2;
+  google.protobuf.Timestamp since = 3;
+  int32 max_events = 4;
+  acme.common.v1.ContactInfo subscriber = 5;
+}
+
+// The response of `WatchCareInboxes`.
+message WatchCareInboxesResponse {
+  CareInbox care_inbox = 1;
+  string change_type = 2;
+  google.protobuf.Timestamp changed_at = 3;
+  int64 sequence = 4;
+  acme.common.v1.OperationResult result = 5;
+}

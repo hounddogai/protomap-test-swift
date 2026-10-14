@@ -1,0 +1,257 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.appointments.v1;
+
+import "acme/appointments/v1/appointments.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/identity/v1/refs.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Appointments.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/appointments/v1;appointmentsv1";
+option java_multiple_files = true;
+option java_outer_classname = "ProviderApprovalServiceProto";
+option java_package = "com.acme.appointments.v1";
+
+// Routes providers through approval, with escalation and delegation.
+service ProviderApprovalService {
+  // Submits a provider.
+  rpc SubmitProvider(SubmitProviderRequest) returns (SubmitProviderResponse);
+
+  // Approves a provider.
+  rpc ApproveProvider(ApproveProviderRequest) returns (ApproveProviderResponse);
+
+  // Escalates a provider.
+  rpc EscalateProvider(EscalateProviderRequest) returns (EscalateProviderResponse);
+
+  // Lists providers a page at a time.
+  rpc ListPendingProviders(ListPendingProvidersRequest) returns (ListPendingProvidersResponse);
+
+  // Delegates a provider.
+  rpc DelegateProviderApproval(DelegateProviderApprovalRequest) returns (DelegateProviderApprovalResponse);
+
+  // Recalls a provider.
+  rpc RecallProvider(RecallProviderRequest) returns (RecallProviderResponse);
+
+  // Returns a provider.
+  rpc GetProviderApprovalStatus(GetProviderApprovalStatusRequest) returns (GetProviderApprovalStatusResponse);
+}
+
+// The request of `SubmitProvider`.
+message SubmitProviderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  Provider provider = 3;
+  SubmitProviderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitProvider`.
+message SubmitProviderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Provider provider = 1;
+  SubmitProviderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ApproveProvider`.
+message ApproveProviderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  Provider provider = 3;
+  ApproveProviderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ApproveProvider`.
+message ApproveProviderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Provider provider = 1;
+  ApproveProviderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `EscalateProvider`.
+message EscalateProviderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  Provider provider = 3;
+  EscalateProviderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `EscalateProvider`.
+message EscalateProviderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Provider provider = 1;
+  EscalateProviderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `ListPendingProviders`.
+message ListPendingProvidersRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated ProviderStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  ListPendingProvidersRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `ListPendingProviders`.
+message ListPendingProvidersResponse {
+  repeated Provider providers = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `DelegateProviderApproval`.
+message DelegateProviderApprovalRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  Provider provider = 3;
+  DelegateProviderApprovalRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `DelegateProviderApproval`.
+message DelegateProviderApprovalResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Provider provider = 1;
+  DelegateProviderApprovalResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `RecallProvider`.
+message RecallProviderRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string approver_email = 1;
+    string comment = 2;
+    repeated string conditions = 3;
+    google.protobuf.Timestamp effective_at = 4;
+    acme.identity.v1.UserRef approver = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  Provider provider = 3;
+  RecallProviderRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RecallProvider`.
+message RecallProviderResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  Provider provider = 1;
+  RecallProviderResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetProviderApprovalStatus`.
+message GetProviderApprovalStatusRequest {
+  acme.common.v1.RequestContext context = 1;
+  string provider_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetProviderApprovalStatus`.
+message GetProviderApprovalStatusResponse {
+  Provider provider = 1;
+  acme.common.v1.OperationResult result = 2;
+}

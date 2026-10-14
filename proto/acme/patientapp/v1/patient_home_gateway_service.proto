@@ -1,0 +1,283 @@
+// Copyright 2026 Acme Corp. All rights reserved.
+// Use of this file is governed by the Acme API license in LICENSE.
+
+syntax = "proto3";
+
+package acme.patientapp.v1;
+
+import "acme/common/v1/address.proto";
+import "acme/common/v1/contact.proto";
+import "acme/common/v1/context.proto";
+import "acme/common/v1/operation.proto";
+import "acme/common/v1/paging.proto";
+import "acme/patientapp/v1/patientapp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Acme.Patientapp.V1";
+option go_package = "github.com/hounddogai/protomap-test-golang/gen/acme/patientapp/v1;patientappv1";
+option java_multiple_files = true;
+option java_outer_classname = "PatientHomeGatewayServiceProto";
+option java_package = "com.acme.patientapp.v1";
+
+// The edge API that apps call for patient homes.
+service PatientHomeGatewayService {
+  // Fetchs a patient home.
+  rpc FetchPatientHomeView(FetchPatientHomeViewRequest) returns (FetchPatientHomeViewResponse);
+
+  // Composes a patient home.
+  rpc ComposePatientHomePage(ComposePatientHomePageRequest) returns (ComposePatientHomePageResponse);
+
+  // Refreshs a patient home.
+  rpc RefreshPatientHome(RefreshPatientHomeRequest) returns (RefreshPatientHomeResponse);
+
+  // Submits a patient home.
+  rpc SubmitPatientHomeForm(SubmitPatientHomeFormRequest) returns (SubmitPatientHomeFormResponse);
+
+  // Tracks a patient home.
+  rpc TrackPatientHome(TrackPatientHomeRequest) returns (TrackPatientHomeResponse);
+
+  // Takes a stream of patient homes and answers once at the end.
+  rpc UploadPatientHomeAttachments(stream UploadPatientHomeAttachmentsRequest) returns (UploadPatientHomeAttachmentsResponse);
+
+  // Lists patient homes a page at a time.
+  rpc SearchPatientHomeCatalog(SearchPatientHomeCatalogRequest) returns (SearchPatientHomeCatalogResponse);
+
+  // Returns a patient home.
+  rpc GetPatientHomeSummary(GetPatientHomeSummaryRequest) returns (GetPatientHomeSummaryResponse);
+
+  // Starts a patient home.
+  rpc StartPatientHomeCheckout(StartPatientHomeCheckoutRequest) returns (StartPatientHomeCheckoutResponse);
+}
+
+// The request of `FetchPatientHomeView`.
+message FetchPatientHomeViewRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string device = 1;
+    string locale = 2;
+    acme.common.v1.GeoPoint location = 3;
+    map<string, string> client_hints = 4;
+    string session_id = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  PatientHome patient_home = 3;
+  FetchPatientHomeViewRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `FetchPatientHomeView`.
+message FetchPatientHomeViewResponse {
+  PatientHome patient_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `ComposePatientHomePage`.
+message ComposePatientHomePageRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string device = 1;
+    string locale = 2;
+    acme.common.v1.GeoPoint location = 3;
+    map<string, string> client_hints = 4;
+    string session_id = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  PatientHome patient_home = 3;
+  ComposePatientHomePageRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `ComposePatientHomePage`.
+message ComposePatientHomePageResponse {
+  PatientHome patient_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `RefreshPatientHome`.
+message RefreshPatientHomeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string device = 1;
+    string locale = 2;
+    acme.common.v1.GeoPoint location = 3;
+    map<string, string> client_hints = 4;
+    string session_id = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  PatientHome patient_home = 3;
+  RefreshPatientHomeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `RefreshPatientHome`.
+message RefreshPatientHomeResponse {
+  PatientHome patient_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `SubmitPatientHomeForm`.
+message SubmitPatientHomeFormRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string device = 1;
+    string locale = 2;
+    acme.common.v1.GeoPoint location = 3;
+    map<string, string> client_hints = 4;
+    string session_id = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  PatientHome patient_home = 3;
+  SubmitPatientHomeFormRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `SubmitPatientHomeForm`.
+message SubmitPatientHomeFormResponse {
+  PatientHome patient_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `TrackPatientHome`.
+message TrackPatientHomeRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string device = 1;
+    string locale = 2;
+    acme.common.v1.GeoPoint location = 3;
+    map<string, string> client_hints = 4;
+    string session_id = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  PatientHome patient_home = 3;
+  TrackPatientHomeRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `TrackPatientHome`.
+message TrackPatientHomeResponse {
+  PatientHome patient_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `UploadPatientHomeAttachments`.
+message UploadPatientHomeAttachmentsRequest {
+  // What a stream of records starts with.
+  message StreamHeader {
+    string source = 1;
+    string format = 2;
+    int64 total_records = 3;
+    acme.common.v1.ContactInfo submitted_by = 4;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  oneof chunk {
+    UploadPatientHomeAttachmentsRequest.StreamHeader header = 2;
+    PatientHome record = 3;
+  }
+  int64 sequence = 4;
+}
+
+// The response of `UploadPatientHomeAttachments`.
+message UploadPatientHomeAttachmentsResponse {
+  // A record the import turned down.
+  message Rejection {
+    int64 sequence = 1;
+    string reason = 2;
+    string patient_home_id = 3;
+  }
+
+  int64 accepted = 1;
+  int64 rejected = 2;
+  repeated UploadPatientHomeAttachmentsResponse.Rejection rejections = 3;
+  acme.common.v1.OperationResult result = 4;
+}
+
+// The request of `SearchPatientHomeCatalog`.
+message SearchPatientHomeCatalogRequest {
+  // Which records to include.
+  message Filter {
+    string query = 1;
+    repeated PatientHomeStatus statuses = 2;
+    google.protobuf.Timestamp created_after = 3;
+    map<string, string> labels = 4;
+    string owner_id = 5;
+    string region = 6;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  acme.common.v1.PageRequest page = 2;
+  SearchPatientHomeCatalogRequest.Filter filter = 3;
+  string order_by = 4;
+}
+
+// The response of `SearchPatientHomeCatalog`.
+message SearchPatientHomeCatalogResponse {
+  repeated PatientHome patient_homes = 1;
+  acme.common.v1.PageInfo page_info = 2;
+  acme.common.v1.OperationResult result = 3;
+}
+
+// The request of `GetPatientHomeSummary`.
+message GetPatientHomeSummaryRequest {
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  google.protobuf.FieldMask read_mask = 3;
+}
+
+// The response of `GetPatientHomeSummary`.
+message GetPatientHomeSummaryResponse {
+  PatientHome patient_home = 1;
+  acme.common.v1.OperationResult result = 2;
+}
+
+// The request of `StartPatientHomeCheckout`.
+message StartPatientHomeCheckoutRequest {
+  // What the operation needs besides the record.
+  message Details {
+    string step = 1;
+    map<string, string> parameters = 2;
+    google.protobuf.Duration timeout = 3;
+    string initiated_by = 4;
+    acme.common.v1.ContactInfo notify = 5;
+  }
+
+  acme.common.v1.RequestContext context = 1;
+  string patient_home_id = 2;
+  PatientHome patient_home = 3;
+  StartPatientHomeCheckoutRequest.Details details = 4;
+  string reason = 5;
+  map<string, string> annotations = 6;
+}
+
+// The response of `StartPatientHomeCheckout`.
+message StartPatientHomeCheckoutResponse {
+  // What the operation decided.
+  message Outcome {
+    string status = 1;
+    string message = 2;
+    string reference_id = 3;
+    repeated string next_steps = 4;
+    google.protobuf.Timestamp effective_at = 5;
+  }
+
+  PatientHome patient_home = 1;
+  StartPatientHomeCheckoutResponse.Outcome outcome = 2;
+  acme.common.v1.OperationResult result = 3;
+}
